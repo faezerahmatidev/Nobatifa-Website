@@ -36,12 +36,10 @@ export interface NewCarData {
         [fullWidth]="true"
         (click)="showForm.update((open) => !open)"
       >
-        خودروی جدید
-        <span
-          class="flex size-5 items-center justify-center rounded-md border border-current"
-        >
+        <span class="flex size-5 items-center justify-center rounded-md border border-current">
           <app-icon name="plus" [size]="12" />
         </span>
+        خودروی جدید
       </app-button>
 
       @if (showForm()) {
