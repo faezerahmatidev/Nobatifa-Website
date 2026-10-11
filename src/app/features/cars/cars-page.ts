@@ -43,35 +43,15 @@ import { CarsFacade } from './cars-facade';
                 <span class="text-sm font-bold text-gray-800">
                   {{ car.type }} | {{ formatPlate(car.plate) }}
                 </span>
-                @if (facade.confirmDeleteId() === car.id) {
-                  <span class="flex items-center gap-1">
-                    <span class="text-xs text-gray-500">حذف شود؟</span>
-                    <button
-                      type="button"
-                      (click)="facade.confirmDelete()"
-                      [disabled]="facade.deleting()"
-                      class="rounded-lg bg-danger-base px-2 py-1 text-xs font-bold text-white"
-                    >
-                      بله
-                    </button>
-                    <button
-                      type="button"
-                      (click)="facade.cancelDelete()"
-                      class="rounded-lg px-2 py-1 text-xs text-gray-500"
-                    >
-                      انصراف
-                    </button>
-                  </span>
-                } @else {
-                  <button
-                    type="button"
-                    (click)="facade.toggleMenu(car.id)"
-                    [attr.aria-expanded]="facade.openMenuId() === car.id"
-                    aria-label="عملیات خودرو"
-                    class="rounded-lg p-1 text-gray-500"
-                  >
-                    <app-icon name="more" />
-                  </button>
+                <button
+                  type="button"
+                  (click)="facade.toggleMenu(car.id)"
+                  [attr.aria-expanded]="facade.openMenuId() === car.id"
+                  aria-label="عملیات خودرو"
+                  class="rounded-lg p-1 text-gray-500"
+                >
+                  <app-icon name="more" />
+                </button>
                   @if (facade.openMenuId() === car.id) {
                     <div
                       class="absolute left-2 top-full z-10 mt-1 w-32 rounded-xl border border-gray-200 bg-white py-1 shadow-lg"
@@ -94,7 +74,6 @@ import { CarsFacade } from './cars-facade';
                       </button>
                     </div>
                   }
-                }
               </div>
             }
           </div>
@@ -113,6 +92,28 @@ import { CarsFacade } from './cars-facade';
         [serverError]="facade.formError()"
         (submitted)="facade.save($event.type, $event.plate)"
       />
+    </app-modal>
+
+    <app-modal
+      [open]="facade.confirmDeleteId() !== null"
+      title="حذف خودرو"
+      size="sm"
+      (closed)="facade.cancelDelete()"
+    >
+      <p class="text-sm leading-6 text-gray-700">آیا از حذف خودروی موردنظر مطمئن هستید؟</p>
+      <div class="mt-4 grid grid-cols-2 gap-2">
+        <app-button
+          variant="danger"
+          [fullWidth]="true"
+          [disabled]="facade.deleting()"
+          (click)="facade.confirmDelete()"
+        >
+          بله
+        </app-button>
+        <app-button variant="text" [fullWidth]="true" (click)="facade.cancelDelete()">
+          انصراف
+        </app-button>
+      </div>
     </app-modal>
   `,
 })

@@ -34,4 +34,32 @@ describe('CarsPage', () => {
     expect(el.querySelector('[role="dialog"]')).toBeTruthy();
     expect(el.textContent).toContain('نوع خودرو');
   });
+
+  it('confirms deletion in a modal', async () => {
+    const fixture = TestBed.createComponent(CarsPage);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const menuButton = Array.from(el.querySelectorAll('button')).find(
+      (button) => button.getAttribute('aria-label') === 'عملیات خودرو',
+    );
+    menuButton?.click();
+    fixture.detectChanges();
+    const deleteButton = Array.from(el.querySelectorAll('button')).find(
+      (button) => button.textContent?.trim() === 'حذف',
+    );
+    deleteButton?.click();
+    fixture.detectChanges();
+    expect(el.textContent).toContain('آیا از حذف خودروی موردنظر مطمئن هستید؟');
+    const confirm = Array.from(el.querySelectorAll('button')).find(
+      (button) => button.textContent?.trim() === 'بله',
+    );
+    confirm?.click();
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    fixture.detectChanges();
+    expect((fixture.nativeElement as HTMLElement).textContent).not.toContain('پراید');
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('کوییک');
+  }, 10000);
 });
