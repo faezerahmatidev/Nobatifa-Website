@@ -281,12 +281,12 @@ export class BookingFacade {
     }
   }
 
-  selectionSummary(): string {
+  selectionSummary(): { day: string; time: string } {
     const day = this.days().find((item) => item.id === this.selectedDayId());
     if (!day || !this.pendingSlot) {
-      return '';
+      return { day: '', time: '' };
     }
-    return `${day.weekday} ${day.date} | ساعت ${this.pendingSlot.time}`;
+    return { day: `${day.weekday} ${day.date}`, time: this.pendingSlot.time };
   }
 
   private async afterAuth(): Promise<void> {

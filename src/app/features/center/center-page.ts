@@ -128,7 +128,8 @@ import { CarSelect } from '../home/car-select';
         </span>
         <p class="font-black text-gray-900">فرآیند رزرو با موفقیت انجام شد.</p>
         <p class="text-sm text-gray-600">
-          شما برای روز {{ facade.selectionSummary() }} نوبت خود را رزرو کردید.
+          شما برای روز {{ facade.selectionSummary().day }}، ساعت
+          {{ facade.selectionSummary().time }} نوبت خود را رزرو کردید.
         </p>
         <div class="mt-2 flex flex-wrap justify-center gap-2">
           <app-button (click)="facade.goToAppointments()">نمایش نوبت‌های من</app-button>
