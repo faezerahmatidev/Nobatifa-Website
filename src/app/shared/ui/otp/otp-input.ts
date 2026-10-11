@@ -21,7 +21,7 @@ function normalizeDigits(raw: string): string {
   selector: 'app-otp-input',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="flex justify-center gap-2" dir="ltr">
+    <div class="flex justify-center gap-4" dir="ltr">
       @for (digit of digits(); track $index) {
         <input
           [value]="digit"
@@ -33,7 +33,7 @@ function normalizeDigits(raw: string): string {
           autocomplete="one-time-code"
           [attr.autofocus]="$index === 0 ? '' : null"
           [attr.aria-label]="'رقم ' + ($index + 1)"
-          class="size-12 rounded-lg border border-gray-300 bg-white text-center text-lg font-bold text-gray-900 outline-none focus:border-primary-base"
+          class="size-14 rounded-xl border border-gray-300 bg-white text-center text-xl font-bold text-gray-900 outline-none focus:border-primary-base"
         />
       }
     </div>

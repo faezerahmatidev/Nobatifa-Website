@@ -1,34 +1,45 @@
 import { ChangeDetectionStrategy, Component, input, model, output } from '@angular/core';
 import { Button } from '../../shared/ui/button/button';
+import { Icon } from '../../shared/ui/icon/icon';
 import { OtpInput } from '../../shared/ui/otp/otp-input';
 import { SubmitOnEnter } from '../../shared/ui/form/submit-on-enter';
 
 @Component({
   selector: 'app-otp-form',
-  imports: [OtpInput, Button, SubmitOnEnter],
+  imports: [OtpInput, Button, Icon, SubmitOnEnter],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <p class="text-sm leading-6 text-gray-600">
-      ما یک کد تایید برای شماره {{ mobile() }} ارسال کردیم.
-      <button type="button" (click)="editRequested.emit()" class="font-bold text-primary-bold">
-        ویرایش
+    <p class="mb-10 text-center text-[13px] leading-6 text-gray-500">
+      ما یک کد تایید برای شماره {{ mobile() }}
+      <button
+        type="button"
+        (click)="editRequested.emit()"
+        aria-label="ویرایش شماره"
+        class="mx-1 inline-flex size-5 items-center justify-center rounded-md border border-primary-base text-primary-base"
+      >
+        <app-icon name="pencil" [size]="12" />
       </button>
+      ارسال کردیم.
     </p>
-    <form appSubmitOnEnter (submit)="$event.preventDefault(); submit()" class="my-4">
+    <form appSubmitOnEnter (submit)="$event.preventDefault(); submit()" class="mb-10">
       <app-otp-input [(code)]="code" />
     </form>
-    <button
-      type="button"
-      (click)="resendRequested.emit()"
-      class="mb-4 text-xs text-gray-500"
-    >
-      کد تایید ارسال نشده است؟ برای ارسال مجدد کلیک کنید.
-    </button>
+    <p class="mb-10 text-center text-xs text-gray-500">
+      کد تایید ارسال نشده است؟
+      <button
+        type="button"
+        (click)="resendRequested.emit()"
+        class="font-bold text-primary-bold"
+      >
+        برای ارسال مجدد کلیک کنید.
+      </button>
+    </p>
     @if (serverError()) {
-      <p role="alert" class="mb-4 text-xs text-danger-bold">{{ serverError() }}</p>
+      <p role="alert" class="mb-4 text-center text-xs text-danger-bold">{{ serverError() }}</p>
     }
     <app-button
       type="submit"
+      size="lg"
       [fullWidth]="true"
       [disabled]="code().length !== 4 || busy()"
       (click)="submit()"

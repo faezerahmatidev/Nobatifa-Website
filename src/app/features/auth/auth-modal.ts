@@ -15,7 +15,7 @@ import { ProfileForm, type ProfileData } from './profile-form';
         [open]="true"
         [title]="title()"
         size="sm"
-        [align]="step() === 'login' ? 'start' : 'center'"
+        [align]="step() === 'profile' ? 'center' : 'start'"
         (closed)="closed.emit()"
       >
         @switch (step()) {

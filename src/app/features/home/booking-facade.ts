@@ -273,7 +273,7 @@ export class BookingFacade {
   authTitle(): string {
     switch (this.authStep()) {
       case 'otp':
-        return 'کد تایید';
+        return 'ورود / ثبت‌نام';
       case 'profile':
         return 'تکمیل اطلاعات ثبت‌نام';
       default:

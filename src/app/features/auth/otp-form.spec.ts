@@ -26,6 +26,18 @@ describe('OtpForm', () => {
     expect(emitted).toBe('1234');
   });
 
+  it('submits a complete code through the form', () => {
+    const fixture = TestBed.createComponent(OtpForm);
+    fixture.componentRef.setInput('mobile', '09123456789');
+    fixture.detectChanges();
+    let emitted: string | null = null;
+    fixture.componentInstance.submitted.subscribe((code) => (emitted = code));
+    const el = fixture.nativeElement as HTMLElement;
+    fillCode(el, '1234');
+    (el.querySelector('form') as HTMLFormElement).dispatchEvent(new Event('submit'));
+    expect(emitted).toBe('1234');
+  });
+
   it('emits editRequested', () => {
     const fixture = TestBed.createComponent(OtpForm);
     fixture.componentRef.setInput('mobile', '09123456789');
@@ -33,9 +45,7 @@ describe('OtpForm', () => {
     let emitted = false;
     fixture.componentInstance.editRequested.subscribe(() => (emitted = true));
     const el = fixture.nativeElement as HTMLElement;
-    Array.from(el.querySelectorAll('button'))
-      .find((button) => button.textContent?.includes('ویرایش'))
-      ?.click();
+    (el.querySelector('[aria-label="ویرایش شماره"]') as HTMLButtonElement)?.click();
     expect(emitted).toBe(true);
   });
 });
