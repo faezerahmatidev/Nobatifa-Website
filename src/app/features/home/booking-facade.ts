@@ -81,18 +81,33 @@ export class BookingFacade {
       this.code.markAsTouched();
       return;
     }
+    if (!(await this.findCenter(this.code.value))) {
+      return;
+    }
+    const center = this.center();
+    if (center) {
+      await this.loadDays(center.id);
+    }
+  }
+
+  async findCenter(code: string): Promise<boolean> {
+    const value = code.trim();
+    if (!value) {
+      return false;
+    }
     this.searching.set(true);
     this.searchError.set(null);
     try {
-      const center = await firstValueFrom(this.booking.searchCenter(this.code.value.trim()));
+      const center = await firstValueFrom(this.booking.searchCenter(value));
       this.center.set(center);
-      await this.loadDays(center.id);
+      return true;
     } catch (error) {
       this.center.set(null);
       this.days.set([]);
       this.slots.set([]);
       this.slotsState.set('idle');
       this.searchError.set(errorMessage(error));
+      return false;
     } finally {
       this.searching.set(false);
     }

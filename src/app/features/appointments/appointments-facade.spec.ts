@@ -35,7 +35,14 @@ describe('AppointmentsFacade', () => {
   it('navigates to the invoice page', () => {
     navigated.length = 0;
     const facade = setup();
-    facade.goToInvoice('inv1');
-    expect(navigated).toEqual([['/profile/invoice', 'inv1']]);
+    facade.goToInvoice('a2');
+    expect(navigated).toEqual([['/profile/invoice', 'a2']]);
+  });
+
+  it('navigates to the center page', () => {
+    navigated.length = 0;
+    const facade = setup();
+    facade.goToCenter('1001');
+    expect(navigated).toEqual([['/center', '1001']]);
   });
 });

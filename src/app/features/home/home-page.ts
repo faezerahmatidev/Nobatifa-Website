@@ -1,44 +1,15 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  inject,
-  OnInit,
-} from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LoginForm } from '../auth/login-form';
-import { OtpForm } from '../auth/otp-form';
-import { ProfileForm } from '../auth/profile-form';
-import { Button } from '../../shared/ui/button/button';
-import { DateStrip } from '../../shared/ui/date-strip/date-strip';
-import { EmptyState } from '../../shared/ui/states/empty-state';
-import { ErrorState } from '../../shared/ui/states/error-state';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DestroyRef } from '@angular/core';
+import { AuthModal } from '../auth/auth-modal';
 import { Icon } from '../../shared/ui/icon/icon';
-import { LoadingState } from '../../shared/ui/states/loading-state';
-import { Modal } from '../../shared/ui/modal/modal';
-import { SlotCard } from '../../shared/ui/slot-card/slot-card';
 import { BookingFacade } from './booking-facade';
-import { CarSelect } from './car-select';
 
 @Component({
   selector: 'app-home-page',
-  imports: [
-    ReactiveFormsModule,
-    Button,
-    CarSelect,
-    DateStrip,
-    EmptyState,
-    ErrorState,
-    Icon,
-    LoadingState,
-    LoginForm,
-    Modal,
-    OtpForm,
-    ProfileForm,
-    SlotCard,
-  ],
+  imports: [ReactiveFormsModule, AuthModal, Icon],
   providers: [BookingFacade],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -59,7 +30,7 @@ import { CarSelect } from './car-select';
           class="mx-auto mt-6 h-auto w-full max-w-md lg:hidden"
         />
         <form
-          (submit)="$event.preventDefault(); facade.search()"
+          (submit)="$event.preventDefault(); search()"
           class="mx-auto mt-6 flex max-w-xl items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 p-2"
         >
           <input
@@ -89,113 +60,19 @@ import { CarSelect } from './car-select';
       </div>
     </section>
 
-    @if (facade.center()) {
-      <section class="mx-auto max-w-7xl px-4 py-8">
-        <h2 class="mb-4 text-lg font-black text-gray-900">{{ facade.center()?.name }}</h2>
-        <app-date-strip
-          [days]="facade.days()"
-          [selectedId]="facade.selectedDayId()"
-          (selectedIdChange)="facade.selectDay($event)"
-        />
-        @switch (facade.slotsState()) {
-          @case ('loading') {
-            <app-loading-state />
-          }
-          @case ('empty') {
-            <app-empty-state
-              title="ساعتی برای نمایش وجود ندارد"
-              message="در این روز نوبت خالی ثبت نشده است. روز دیگری را انتخاب کنید."
-            />
-          }
-          @case ('error') {
-            <app-error-state
-              [message]="facade.slotsError() ?? ''"
-              (retry)="facade.selectDay(facade.selectedDayId())"
-            />
-          }
-          @case ('ready') {
-            <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              @for (slot of facade.slots(); track slot.id) {
-                <app-slot-card
-                  [time]="slot.time"
-                  [status]="slot.status"
-                  (reserve)="facade.requestReserve(slot)"
-                />
-              }
-            </div>
-          }
-        }
-      </section>
-    }
-
-    @if (facade.authStep() !== null) {
-      <app-modal [open]="true" [title]="facade.authTitle()" (closed)="facade.closeAuth()">
-      @switch (facade.authStep()) {
-        @case ('login') {
-          <app-login-form
-            [busy]="facade.authBusy()"
-            [serverError]="facade.authError()"
-            (submitted)="facade.sendOtp($event)"
-          />
-        }
-        @case ('otp') {
-          <app-otp-form
-            [mobile]="facade.mobile()"
-            [busy]="facade.authBusy()"
-            [serverError]="facade.authError()"
-            (submitted)="facade.verifyOtp($event)"
-            (editRequested)="facade.authStep.set('login')"
-            (resendRequested)="facade.resendOtp()"
-          />
-        }
-        @case ('profile') {
-          <app-profile-form
-            [busy]="facade.authBusy()"
-            [serverError]="facade.authError()"
-            (submitted)="facade.completeProfile($event.firstName, $event.lastName)"
-          />
-        }
-      }
-      </app-modal>
-    }
-
-    @if (facade.carModalOpen()) {
-      <app-modal [open]="true" title="انتخاب خودرو" size="lg" (closed)="facade.closeCarModal()">
-      <app-car-select
-        [summary]="facade.selectionSummary()"
-        [cars]="facade.cars()"
-        [state]="facade.carsState()"
-        [error]="facade.carsError()"
-        [saving]="facade.carSaving() || facade.reserving()"
-        [reserveError]="facade.reserveError()"
-        [selectedCarId]="facade.selectedCarId()"
-        (selectedCarIdChange)="facade.selectedCarId.set($event)"
-        (confirmed)="facade.confirmReserve()"
-        (retried)="facade.loadCars()"
-        (carCreated)="facade.addCar($event.type, $event.plate)"
-      />
-      </app-modal>
-    }
-
-    @if (facade.reservation() !== null) {
-      <app-modal [open]="true" title="" (closed)="facade.closeSuccess()">
-      <div class="flex flex-col items-center gap-3 py-4 text-center">
-        <span
-          class="flex size-16 items-center justify-center rounded-full bg-success-pale text-success-deep"
-        >
-          <app-icon name="check" [size]="32" />
-        </span>
-        <p class="font-black text-gray-900">فرآیند رزرو با موفقیت انجام شد.</p>
-        <p class="text-sm text-gray-600">
-          شما برای روز {{ facade.selectionSummary() }} نوبت خود را رزرو کردید.
-        </p>
-        <div class="mt-2 flex flex-wrap justify-center gap-2">
-          <app-button (click)="facade.goToAppointments()">نمایش نوبت‌های من</app-button>
-          <app-button variant="text" (click)="facade.closeSuccess()">بستن</app-button>
-        </div>
-      </div>
-      </app-modal>
-    }
+    <app-auth-modal
+      [step]="facade.authStep()"
+      [title]="facade.authTitle()"
+      [busy]="facade.authBusy()"
+      [error]="facade.authError()"
+      [mobile]="facade.mobile()"
+      (closed)="facade.closeAuth()"
+      (loginSubmitted)="facade.sendOtp($event)"
+      (otpSubmitted)="facade.verifyOtp($event)"
+      (profileSubmitted)="facade.completeProfile($event.firstName, $event.lastName)"
+      (editRequested)="facade.authStep.set('login')"
+      (resendRequested)="facade.resendOtp()"
+    />
   `,
 })
 export class HomePage implements OnInit {
@@ -215,5 +92,11 @@ export class HomePage implements OnInit {
         });
       }
     });
+  }
+
+  protected async search(): Promise<void> {
+    if (await this.facade.findCenter(this.facade.code.value)) {
+      await this.router.navigate(['/center', this.facade.code.value.trim()]);
+    }
   }
 }

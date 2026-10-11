@@ -6,6 +6,7 @@ describe('routes', () => {
     const paths = routes.map((route) => route.path);
     expect(paths).toContain('');
     expect(paths).toContain('about');
+    expect(paths).toContain('center/:code');
     expect(paths).toContain('profile/appointments');
     expect(paths).toContain('profile/cars');
     expect(paths).toContain('profile/invoice/:id');

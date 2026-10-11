@@ -51,7 +51,11 @@ import { AppointmentsFacade } from './appointments-facade';
                   {{ appointment.serviceCenter.address }}
                 </p>
                 <div class="mt-auto flex gap-2">
-                  <app-button variant="accent" size="sm" (click)="facade.goToCenter()">
+                  <app-button
+                    variant="accent"
+                    size="sm"
+                    (click)="facade.goToCenter(appointment.serviceCenter.code)"
+                  >
                     صفحه اتوسرویس
                   </app-button>
                   @if (appointment.status === 'done') {

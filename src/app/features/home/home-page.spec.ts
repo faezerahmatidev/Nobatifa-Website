@@ -1,14 +1,38 @@
+import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
+import {
+  ActivatedRoute,
+  convertToParamMap,
+  provideRouter,
+  Router,
+} from '@angular/router';
 import { of } from 'rxjs';
 import { provideMockDataAccess } from '../../data-access/mock/provide-mock-data-access';
 import { HomePage } from './home-page';
+
+@Component({ template: '' })
+class Dummy {}
+
+function baseProviders(authParam: string | null): unknown[] {
+  const routes = authParam === null ? [{ path: 'center/:code', component: Dummy }] : [];
+  const providers: unknown[] = [provideRouter(routes), ...provideMockDataAccess()];
+  if (authParam !== null) {
+    providers.push({
+      provide: ActivatedRoute,
+      useValue: {
+        snapshot: { queryParamMap: convertToParamMap({ auth: authParam }) },
+        queryParamMap: of(convertToParamMap({ auth: authParam })),
+      },
+    });
+  }
+  return providers;
+}
 
 describe('HomePage', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [HomePage],
-      providers: [provideRouter([]), ...provideMockDataAccess()],
+      providers: [...baseProviders(null)],
     }).compileComponents();
   });
 
@@ -20,7 +44,7 @@ describe('HomePage', () => {
     expect(el.querySelector('[aria-label="کد اتوسرویس"]')).toBeTruthy();
   });
 
-  it('shows booking after a successful search', async () => {
+  it('navigates to the center page on successful search', async () => {
     const fixture = TestBed.createComponent(HomePage);
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
@@ -29,9 +53,25 @@ describe('HomePage', () => {
     input.dispatchEvent(new Event('input'));
     (el.querySelector('form') as HTMLFormElement).dispatchEvent(new Event('submit'));
     await fixture.whenStable();
-    await new Promise((resolve) => setTimeout(resolve, 600));
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    expect(TestBed.inject(Router).url).toBe('/center/1001');
+  }, 10000);
+
+  it('shows an error for unknown codes without navigating', async () => {
+    const fixture = TestBed.createComponent(HomePage);
     fixture.detectChanges();
-    expect((fixture.nativeElement as HTMLElement).textContent).toContain('اتوسرویس محمد');
+    const el = fixture.nativeElement as HTMLElement;
+    const input = el.querySelector('[aria-label="کد اتوسرویس"]') as HTMLInputElement;
+    input.value = '0000';
+    input.dispatchEvent(new Event('input'));
+    (el.querySelector('form') as HTMLFormElement).dispatchEvent(new Event('submit'));
+    await fixture.whenStable();
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    fixture.detectChanges();
+    expect(TestBed.inject(Router).url).toBe('/');
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain(
+      'کد اتوسرویس یافت نشد',
+    );
   }, 10000);
 });
 
@@ -39,17 +79,7 @@ describe('HomePage with login param', () => {
   it('opens the auth modal', async () => {
     await TestBed.configureTestingModule({
       imports: [HomePage],
-      providers: [
-        provideRouter([]),
-        ...provideMockDataAccess(),
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: { queryParamMap: convertToParamMap({ auth: 'login' }) },
-            queryParamMap: of(convertToParamMap({ auth: 'login' })),
-          },
-        },
-      ],
+      providers: [...baseProviders('login')],
     }).compileComponents();
     const fixture = TestBed.createComponent(HomePage);
     fixture.detectChanges();

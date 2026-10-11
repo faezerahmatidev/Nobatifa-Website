@@ -14,6 +14,11 @@ export const routes: Routes = [
     title: 'نوبتیفا | درباره ما',
   },
   {
+    path: 'center/:code',
+    loadComponent: () => import('./features/center/center-page').then((m) => m.CenterPage),
+    title: 'نوبتیفا | اتوسرویس',
+  },
+  {
     path: 'profile/appointments',
     canMatch: [authGuard],
     loadComponent: () =>

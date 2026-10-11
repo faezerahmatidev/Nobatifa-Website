@@ -32,8 +32,8 @@ export class AppointmentsFacade {
     }
   }
 
-  goToCenter(): void {
-    void this.router.navigate(['/']);
+  goToCenter(code: string): void {
+    void this.router.navigate(['/center', code]);
   }
 
   goToInvoice(id: string): void {
