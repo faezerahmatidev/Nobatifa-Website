@@ -1,59 +1,71 @@
-# NobatifaWebsite
+# Nobatifa Website — User Application
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.7.
+User-facing frontend for the Nobatifa vehicle service appointment booking platform.
+Persian (RTL), responsive (Desktop / Tablet / Mobile), built with Angular + Tailwind CSS.
 
-## Development server
+> Admin dashboard lives in a separate repository and is not part of this project.
 
-To start a local development server, run:
+## Stack
 
-```bash
-ng serve
+- Angular 22 (standalone components, signals, typed reactive forms, lazy-loaded routes, SSR)
+- TypeScript (strict-ish, no `any` in app code)
+- Tailwind CSS v4 (design tokens via `@theme`)
+- Vitest for unit tests (`npx ng test`)
+
+## Architecture
+
+```text
+UI (features / shared)
+  → ports (interfaces + InjectionTokens, no implementation)
+  → mock (in-memory gateways with latency + Persian error messages)
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Components never import mock data. Raw mock datasets live ONLY in
+  `src/app/data-access/mock-data/`.
+- Swapping the mock backend with a real API only requires replacing the
+  providers returned by `provideMockDataAccess()`. UI stays untouched.
 
-## Code scaffolding
+## Folder structure
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```text
+src/app/
+  core/         shell (header/footer/layout), session, auth guard
+  shared/ui/    button, input, modal, badge, icon, otp, plate, date-strip,
+                slot-card, loading/empty/error states
+  features/     home (booking), auth (forms), appointments, cars, invoice, about
+  data-access/  models, ports/, mock/, mock-data/
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Commands
 
 ```bash
-ng generate --help
+npm start        # dev server (http://localhost:4200)
+npx ng test      # unit tests (Vitest)
+npx ng build     # production build
 ```
 
-## Building
+## Design system
 
-To build the project run:
+- Font: Vazirmatn (local files in `public/fonts/vazirmatn/`, weights 100–900).
+- Colors are named tokens in `src/styles/tokens.css` (`primary-*`, `accent-*`,
+  `success-*`, `danger-*`, `warning-*`, `info-*`, `gray-*`). Use them by name
+  (e.g. `bg-primary-base`); to change a color, edit only that file.
+- Icons: `app-icon` component (outline style, Lucide path data). When
+  `lucide-angular` supports Angular 22 it can replace the component.
 
-```bash
-ng build
-```
+## Mock backend
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+- Latency: 150ms per call (`MOCK_LATENCY_MS`).
+- Fixed OTP code: `1234`.
+- Demo service-center code: `1001`.
+- Demo user: علیرضا رمضانی / `09128573449`.
 
-## Running unit tests
+## Authentication limitation
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Authentication is frontend-mock only (no passwords stored, no tokens verified).
+It demonstrates the flow and guards routes, but it is NOT a security boundary.
+A real backend must implement it before production use with real data.
 
-```bash
-ng test
-```
+## Environment
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+No secrets are required. `.env*` files (except `.env.example`) are git-ignored.
