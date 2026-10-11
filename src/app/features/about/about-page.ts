@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Icon } from '../../shared/ui/icon/icon';
 
 @Component({
   selector: 'app-about-page',
-  imports: [Icon],
+  imports: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="mx-auto max-w-7xl px-4 py-10">
@@ -22,12 +21,12 @@ import { Icon } from '../../shared/ui/icon/icon';
             نوبتیفا، مدیریت زمان و خودرویتان را هوشمندانه‌تر انجام دهید!
           </p>
         </div>
-        <div
-          class="flex aspect-square w-full max-w-md flex-1 items-center justify-center rounded-3xl bg-primary-pale text-primary-bold"
-          role="img"
-          aria-label="تصویر معرفی نوبتیفا"
-        >
-          <app-icon name="clock" [size]="96" />
+        <div class="flex-1">
+          <img
+            src="/illustrations/About-us.png"
+            alt="ایلاستریشن کاربر نوبتیفا"
+            class="h-auto w-full"
+          />
         </div>
       </div>
     </section>
