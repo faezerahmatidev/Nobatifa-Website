@@ -1,11 +1,12 @@
-import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Button } from '../../shared/ui/button/button';
 import { Icon } from '../../shared/ui/icon/icon';
 import { Logo } from '../../shared/ui/logo/logo';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, RouterLinkActive, Icon, Logo],
+  imports: [RouterLink, RouterLinkActive, Button, Icon, Logo],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <header class="border-b border-gray-200 bg-white">
@@ -58,34 +59,56 @@ import { Logo } from '../../shared/ui/logo/logo';
             @if (profileOpen()) {
               <div
                 role="menu"
-                class="absolute left-0 top-full z-10 mt-2 w-48 rounded-xl border border-gray-200 bg-white py-2 text-center shadow-lg"
+                class="absolute left-0 top-full z-10 mt-2 flex w-60 flex-col gap-2 rounded-xl border border-gray-200 bg-white p-3 text-center shadow-lg"
               >
-                <a
+                <app-button
                   role="menuitem"
-                  routerLink="/profile/appointments"
-                  routerLinkActive="font-bold text-primary-bold"
-                  (click)="profileOpen.set(false)"
-                  class="block px-4 py-2 text-sm text-gray-700"
+                  size="lg"
+                  [fullWidth]="true"
+                  (click)="goTo('/profile/appointments')"
                 >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M4 8h13" />
+                    <path d="m14 5 3 3-3 3" />
+                    <path d="M20 16H7" />
+                    <path d="m10 13-3 3 3 3" />
+                  </svg>
                   نوبت‌های من
-                </a>
-                <a
+                </app-button>
+                <app-button
                   role="menuitem"
-                  routerLink="/profile/cars"
-                  routerLinkActive="font-bold text-primary-bold"
-                  (click)="profileOpen.set(false)"
-                  class="block px-4 py-2 text-sm text-gray-700"
+                  variant="accent"
+                  size="lg"
+                  [fullWidth]="true"
+                  (click)="goTo('/profile/cars')"
                 >
+                  <span
+                    class="flex size-5 items-center justify-center rounded-full border border-current"
+                  >
+                    <app-icon name="more" [size]="12" />
+                  </span>
                   خودروهای من
-                </a>
-                <button
+                </app-button>
+                <app-button
                   role="menuitem"
-                  type="button"
+                  variant="danger"
+                  size="lg"
+                  [fullWidth]="true"
                   (click)="logout.emit()"
-                  class="block w-full px-4 py-2 text-center text-sm font-bold text-danger-bold"
                 >
+                  <app-icon name="log-out" [size]="18" />
                   خروج
-                </button>
+                </app-button>
               </div>
             }
           } @else {
@@ -132,4 +155,10 @@ export class Header {
 
   protected readonly menuOpen = signal(false);
   protected readonly profileOpen = signal(false);
+  private readonly router = inject(Router);
+
+  protected goTo(path: string): void {
+    this.profileOpen.set(false);
+    void this.router.navigate([path]);
+  }
 }
