@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component, input, model, output, signal } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
 import type { PlateNumber, Vehicle } from '../../data-access/models';
 import { Button } from '../../shared/ui/button/button';
 import { Icon } from '../../shared/ui/icon/icon';
-import { TextField } from '../../shared/ui/input/text-field';
-import { PlateInput } from '../../shared/ui/plate/plate-input';
+import { Modal } from '../../shared/ui/modal/modal';
+import { CarForm, type CarFormData } from '../cars/car-form';
 import { formatPlate } from '../../shared/ui/plate/plate-format';
 import { ErrorState } from '../../shared/ui/states/error-state';
 import { LoadingState } from '../../shared/ui/states/loading-state';
@@ -17,7 +16,7 @@ export interface NewCarData {
 
 @Component({
   selector: 'app-car-select',
-  imports: [Button, Icon, TextField, PlateInput, ErrorState, LoadingState],
+  imports: [Button, CarForm, Icon, Modal, ErrorState, LoadingState],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="flex flex-col gap-3">
@@ -34,26 +33,13 @@ export interface NewCarData {
       <app-button
         variant="accent"
         [fullWidth]="true"
-        (click)="showForm.update((open) => !open)"
+        (click)="showCarForm.set(true)"
       >
         <span class="flex size-5 items-center justify-center rounded-md border border-current">
           <app-icon name="plus" [size]="12" />
         </span>
         خودروی جدید
       </app-button>
-
-      @if (showForm()) {
-        <div class="flex flex-col gap-3 rounded-xl border border-gray-200 p-4">
-          <app-text-field
-            label="نوع خودرو"
-            [control]="typeControl"
-            placeholder="پراید"
-            error="نوع خودرو الزامی است"
-          />
-          <app-plate-input [plate]="plate()" (plateChange)="plate.set($event)" />
-          <app-button size="sm" [disabled]="saving()" (click)="submitNewCar()">تایید</app-button>
-        </div>
-      }
 
       @switch (state()) {
         @case ('loading') {
@@ -105,6 +91,16 @@ export interface NewCarData {
         رزرو
       </app-button>
     </div>
+
+    @if (showCarForm()) {
+      <app-modal
+        [open]="true"
+        title="خودروی جدید"
+        (closed)="showCarForm.set(false)"
+      >
+        <app-car-form [saving]="saving()" (submitted)="onCarCreated($event)" />
+      </app-modal>
+    }
   `,
 })
 export class CarSelect {
@@ -119,18 +115,8 @@ export class CarSelect {
   readonly retried = output<void>();
   readonly carCreated = output<NewCarData>();
 
-  protected readonly showForm = signal(false);
+  protected readonly showCarForm = signal(false);
   protected readonly formatPlate = formatPlate;
-  protected readonly typeControl = new FormControl('', {
-    validators: [Validators.required],
-    nonNullable: true,
-  });
-  protected readonly plate = signal<PlateNumber>({
-    part1: '',
-    part2: '',
-    letter: '',
-    iranCode: '',
-  });
 
   protected carClasses(id: string): string {
     const selected = this.selectedCarId() === id;
@@ -142,14 +128,8 @@ export class CarSelect {
     );
   }
 
-  protected submitNewCar(): void {
-    const plate = this.plate();
-    const complete = Boolean(plate.part1 && plate.part2 && plate.letter && plate.iranCode);
-    if (this.typeControl.invalid || !complete) {
-      this.typeControl.markAsTouched();
-      return;
-    }
-    this.carCreated.emit({ type: this.typeControl.value.trim(), plate: { ...plate } });
-    this.showForm.set(false);
+  protected onCarCreated(data: CarFormData): void {
+    this.showCarForm.set(false);
+    this.carCreated.emit({ type: data.type, plate: data.plate });
   }
 }
