@@ -36,7 +36,7 @@ const WIDTH_CLASSES: Record<ModalSize, string> = {
               type="button"
               (click)="closed.emit()"
               aria-label="بستن"
-              class="absolute left-0 flex size-7 items-center justify-center rounded-lg border border-gray-300 text-gray-600"
+              class="absolute right-0 flex size-7 items-center justify-center rounded-lg border border-gray-300 text-gray-600"
             >
               <app-icon name="x" [size]="14" />
             </button>
