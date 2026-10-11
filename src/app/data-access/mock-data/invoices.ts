@@ -6,6 +6,7 @@ const [CAR] = MOCK_VEHICLES;
 export const MOCK_INVOICES: readonly Invoice[] = [
   {
     id: 'inv1',
+    appointmentId: 'a2',
     trackingCode: '000085752257',
     customer: { firstName: 'فائزه', lastName: 'رحمتی', mobile: '09227521450' },
     vehicle: CAR,

@@ -10,7 +10,7 @@ function setup(): InvoiceFacade {
 describe('InvoiceFacade', () => {
   it('loads the invoice detail', async () => {
     const facade = setup();
-    await facade.load('inv1');
+    await facade.load('a2');
     expect(facade.state()).toBe('ready');
     expect(facade.invoice()?.trackingCode).toBe('000085752257');
     expect(facade.invoice()?.items.length).toBe(4);

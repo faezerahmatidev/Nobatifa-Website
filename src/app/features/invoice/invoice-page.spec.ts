@@ -12,7 +12,7 @@ describe('InvoicePage', () => {
         ...provideMockDataAccess(),
         {
           provide: ActivatedRoute,
-          useValue: { snapshot: { paramMap: convertToParamMap({ id: 'inv1' }) } },
+          useValue: { snapshot: { paramMap: convertToParamMap({ id: 'a2' }) } },
         },
       ],
     }).compileComponents();

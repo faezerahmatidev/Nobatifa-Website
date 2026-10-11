@@ -7,8 +7,8 @@ import { MOCK_INVOICES } from '../mock-data/invoices';
 
 @Injectable()
 export class MockInvoicesGateway implements InvoicesGateway {
-  getById(id: string): Observable<Invoice> {
-    const invoice = MOCK_INVOICES.find((item) => item.id === id);
+  getByAppointmentId(appointmentId: string): Observable<Invoice> {
+    const invoice = MOCK_INVOICES.find((item) => item.appointmentId === appointmentId);
     if (!invoice) {
       return fail('فاکتور یافت نشد');
     }

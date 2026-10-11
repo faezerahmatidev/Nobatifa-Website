@@ -17,11 +17,11 @@ export class InvoiceFacade {
 
   private readonly invoices = inject(INVOICES_GATEWAY);
 
-  async load(id: string): Promise<void> {
+  async load(appointmentId: string): Promise<void> {
     this.state.set('loading');
     this.error.set(null);
     try {
-      const invoice = await firstValueFrom(this.invoices.getById(id));
+      const invoice = await firstValueFrom(this.invoices.getByAppointmentId(appointmentId));
       this.invoice.set(invoice);
       this.state.set('ready');
     } catch (error) {

@@ -62,6 +62,7 @@ export interface InvoiceItem {
 
 export interface Invoice {
   readonly id: string;
+  readonly appointmentId: string;
   trackingCode: string;
   customer: Pick<User, 'firstName' | 'lastName' | 'mobile'>;
   vehicle: Vehicle;
