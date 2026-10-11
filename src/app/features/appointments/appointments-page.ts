@@ -1,15 +1,33 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import type { AppointmentStatus } from '../../data-access/models';
 import { Button } from '../../shared/ui/button/button';
-import { Icon } from '../../shared/ui/icon/icon';
-import { StatusBadge } from '../../shared/ui/badge/status-badge';
+import { Icon, type IconName } from '../../shared/ui/icon/icon';
 import { EmptyState } from '../../shared/ui/states/empty-state';
 import { ErrorState } from '../../shared/ui/states/error-state';
 import { LoadingState } from '../../shared/ui/states/loading-state';
 import { AppointmentsFacade } from './appointments-facade';
 
+const STATUS_BOX: Record<AppointmentStatus, string> = {
+  pending: 'border-warning-bold text-warning-bold',
+  done: 'border-success-deep text-success-deep',
+  cancelled: 'border-danger-base text-danger-base',
+};
+
+const STATUS_ICON: Record<AppointmentStatus, IconName> = {
+  pending: 'bell',
+  done: 'check',
+  cancelled: 'x',
+};
+
+const STATUS_LABEL: Record<AppointmentStatus, string> = {
+  pending: 'در انتظار',
+  done: 'انجام‌شده',
+  cancelled: 'لغو شده',
+};
+
 @Component({
   selector: 'app-appointments-page',
-  imports: [Button, Icon, StatusBadge, EmptyState, ErrorState, LoadingState],
+  imports: [Button, Icon, EmptyState, ErrorState, LoadingState],
   providers: [AppointmentsFacade],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -34,37 +52,74 @@ import { AppointmentsFacade } from './appointments-facade';
             @for (appointment of facade.appointments(); track appointment.id) {
               <article
                 data-testid="appointment-card"
-                class="flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-4"
+                class="flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-5"
               >
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between gap-2">
                   <h2 class="font-black text-gray-900">{{ appointment.serviceCenter.name }}</h2>
-                  <app-status-badge [status]="appointment.status" />
+                  <span
+                    role="img"
+                    [attr.aria-label]="statusLabel(appointment.status)"
+                    [class]="
+                      'flex size-9 shrink-0 items-center justify-center rounded-lg border-2 ' +
+                      statusBox(appointment.status)
+                    "
+                  >
+                    <app-icon [name]="statusIcon(appointment.status)" [size]="18" />
+                  </span>
                 </div>
-                <p class="flex items-center gap-2 text-sm text-gray-600">
-                  <app-icon name="calendar" [size]="16" />
+                <p class="flex items-center gap-2 text-sm font-bold text-gray-800">
+                  <app-icon name="calendar" [size]="22" />
                   {{ appointment.date }}
-                  <app-icon name="clock" [size]="16" />
+                </p>
+                <p class="flex items-center gap-2 text-sm font-bold text-gray-800">
+                  <app-icon name="clock" [size]="22" />
                   {{ appointment.time }}
                 </p>
-                <p class="flex items-start gap-2 text-sm text-gray-500">
-                  <app-icon name="map-pin" [size]="16" />
-                  {{ appointment.serviceCenter.address }}
+                <p class="flex items-start gap-2 text-sm font-bold text-gray-800">
+                  <app-icon name="map-pin" [size]="22" />
+                  <span>{{ appointment.serviceCenter.address }}</span>
                 </p>
                 <div class="mt-auto flex gap-2">
+                  @if (appointment.status === 'done') {
+                    <app-button size="sm" (click)="facade.goToInvoice(appointment.id)">
+                      <img src="/icons/document.svg" alt="" width="13" height="14" />
+                      فاکتور
+                    </app-button>
+                  } @else {
+                    <app-button size="sm" [disabled]="true">
+                      <img src="/icons/document.svg" alt="" width="13" height="14" />
+                      فاکتور
+                    </app-button>
+                  }
                   <app-button
                     variant="accent"
                     size="sm"
                     (click)="facade.goToCenter(appointment.serviceCenter.code)"
                   >
                     صفحه اتوسرویس
+                    <svg
+                      width="12"
+                      height="10"
+                      viewBox="0 0 12 10"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M0.75 4.76638H10.75"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                      <path
+                        d="M4.7832 8.78267L0.74987 4.76667L4.7832 0.75"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
                   </app-button>
-                  @if (appointment.status === 'done') {
-                    <app-button size="sm" (click)="facade.goToInvoice(appointment.id)">
-                      فاکتور
-                    </app-button>
-                  } @else {
-                    <app-button size="sm" [disabled]="true">فاکتور</app-button>
-                  }
                 </div>
               </article>
             }
@@ -79,5 +134,17 @@ export class AppointmentsPage implements OnInit {
 
   ngOnInit(): void {
     void this.facade.load();
+  }
+
+  protected statusBox(status: AppointmentStatus): string {
+    return STATUS_BOX[status];
+  }
+
+  protected statusIcon(status: AppointmentStatus): IconName {
+    return STATUS_ICON[status];
+  }
+
+  protected statusLabel(status: AppointmentStatus): string {
+    return STATUS_LABEL[status];
   }
 }
