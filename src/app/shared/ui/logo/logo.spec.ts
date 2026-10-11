@@ -2,10 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { Logo } from './logo';
 
 describe('Logo', () => {
-  it('renders the brand name', () => {
+  it('renders the brand image', () => {
     const fixture = TestBed.createComponent(Logo);
     fixture.detectChanges();
-    expect((fixture.nativeElement as HTMLElement).textContent).toContain('نوبتیفا');
-    expect((fixture.nativeElement as HTMLElement).querySelector('svg')).toBeTruthy();
+    const img = (fixture.nativeElement as HTMLElement).querySelector('img');
+    expect(img?.getAttribute('src')).toBe('/logo.svg');
+    expect(img?.getAttribute('alt')).toBe('نوبتیفا');
   });
 });
