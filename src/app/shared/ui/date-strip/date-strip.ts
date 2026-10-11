@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, ElementRef, input, model, viewChild } from '@angular/core';
 import { Icon } from '../icon/icon';
+import { toFaDigits } from '../../utils/fa-digits';
 
 export interface DateOption {
   id: string;
@@ -39,7 +40,7 @@ export interface DateOption {
             >
               {{ day.weekday }}
             </span>
-            <span class="text-[13px] font-bold">{{ day.date }}</span>
+            <span class="text-[13px] font-bold">{{ toFaDigits(day.date) }}</span>
           </button>
         }
       </div>
@@ -57,6 +58,7 @@ export interface DateOption {
 export class DateStrip {
   readonly days = input.required<readonly DateOption[]>();
   readonly selectedId = model<string>('');
+  protected readonly toFaDigits = toFaDigits;
 
   private readonly scroller = viewChild<ElementRef<HTMLElement>>('scroller');
 
