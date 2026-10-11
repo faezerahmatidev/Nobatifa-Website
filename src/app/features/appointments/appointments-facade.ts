@@ -1,11 +1,8 @@
-import { Inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import type { Appointment } from '../../data-access/models';
-import {
-  APPOINTMENTS_GATEWAY,
-  type AppointmentsGateway,
-} from '../../data-access/ports/appointments-gateway';
+import { APPOINTMENTS_GATEWAY } from '../../data-access/ports/appointments-gateway';
 
 export type ListState = 'idle' | 'loading' | 'ready' | 'empty' | 'error';
 
@@ -19,10 +16,8 @@ export class AppointmentsFacade {
   readonly state = signal<ListState>('idle');
   readonly error = signal<string | null>(null);
 
-  constructor(
-    @Inject(APPOINTMENTS_GATEWAY) private readonly appointmentsGateway: AppointmentsGateway,
-    private readonly router: Router,
-  ) {}
+  private readonly appointmentsGateway = inject(APPOINTMENTS_GATEWAY);
+  private readonly router = inject(Router);
 
   async load(): Promise<void> {
     this.state.set('loading');

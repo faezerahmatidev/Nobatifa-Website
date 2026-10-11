@@ -1,10 +1,10 @@
-import { Inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { AUTH_GATEWAY, type AuthGateway } from '../../data-access/ports/auth-gateway';
-import { BOOKING_GATEWAY, type BookingGateway } from '../../data-access/ports/booking-gateway';
-import { CARS_GATEWAY, type CarsGateway } from '../../data-access/ports/cars-gateway';
+import { AUTH_GATEWAY } from '../../data-access/ports/auth-gateway';
+import { BOOKING_GATEWAY } from '../../data-access/ports/booking-gateway';
+import { CARS_GATEWAY } from '../../data-access/ports/cars-gateway';
 import { Session } from '../../core/services/session';
 import type {
   Appointment,
@@ -70,13 +70,11 @@ export class BookingFacade {
 
   private pendingSlot: TimeSlot | null = null;
 
-  constructor(
-    @Inject(BOOKING_GATEWAY) private readonly booking: BookingGateway,
-    @Inject(AUTH_GATEWAY) private readonly auth: AuthGateway,
-    @Inject(CARS_GATEWAY) private readonly carsGateway: CarsGateway,
-    private readonly router: Router,
-    private readonly session: Session,
-  ) {}
+  private readonly booking = inject(BOOKING_GATEWAY);
+  private readonly auth = inject(AUTH_GATEWAY);
+  private readonly carsGateway = inject(CARS_GATEWAY);
+  private readonly router = inject(Router);
+  private readonly session = inject(Session);
 
   async search(): Promise<void> {
     if (this.code.invalid) {

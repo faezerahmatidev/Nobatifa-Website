@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import type { Observable } from 'rxjs';
 import type { AuthSession, User } from '../models';
 import { AUTH_GATEWAY, type AuthGateway, type VerifyResult } from '../ports/auth-gateway';
@@ -11,7 +11,7 @@ const MOBILE_PATTERN = /^09\d{9}$/;
 
 @Injectable()
 export class MockAuthGateway implements AuthGateway {
-  constructor(private readonly db: MockDatabase) {}
+  private readonly db = inject(MockDatabase);
 
   requestOtp(mobile: string): Observable<void> {
     if (!MOBILE_PATTERN.test(mobile.trim())) {

@@ -1,23 +1,29 @@
-import type { Router } from '@angular/router';
-import type { Session } from '../../core/services/session';
-import { MockAuthGateway } from '../../data-access/mock/mock-auth-gateway';
-import { MockBookingGateway } from '../../data-access/mock/mock-booking-gateway';
-import { MockCarsGateway } from '../../data-access/mock/mock-cars-gateway';
-import { MockDatabase } from '../../data-access/mock/mock-database';
+import { Router } from '@angular/router';
+import { TestBed } from '@angular/core/testing';
+import { Session } from '../../core/services/session';
+import { provideMockDataAccess } from '../../data-access/mock/provide-mock-data-access';
 import { BookingFacade } from './booking-facade';
 
-const router = { navigate: () => Promise.resolve(true) } as unknown as Router;
-const session = { refresh: () => Promise.resolve() } as unknown as Session;
+const navigated: string[][] = [];
 
 function setup(): BookingFacade {
-  const db = new MockDatabase();
-  return new BookingFacade(
-    new MockBookingGateway(db),
-    new MockAuthGateway(db),
-    new MockCarsGateway(db),
-    router,
-    session,
-  );
+  TestBed.configureTestingModule({
+    providers: [
+      BookingFacade,
+      ...provideMockDataAccess(),
+      {
+        provide: Router,
+        useValue: {
+          navigate: (commands: string[]) => {
+            navigated.push(commands);
+            return Promise.resolve(true);
+          },
+        },
+      },
+      { provide: Session, useValue: { refresh: () => Promise.resolve() } },
+    ],
+  });
+  return TestBed.inject(BookingFacade);
 }
 
 describe('BookingFacade', () => {
@@ -98,4 +104,11 @@ describe('BookingFacade', () => {
     },
     15000,
   );
+
+  it('navigates to appointments from success', () => {
+    navigated.length = 0;
+    const facade = setup();
+    facade.goToAppointments();
+    expect(navigated).toEqual([['/profile/appointments']]);
+  });
 });

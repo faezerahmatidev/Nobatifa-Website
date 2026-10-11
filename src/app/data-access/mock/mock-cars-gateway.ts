@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import type { Observable } from 'rxjs';
 import type { PlateNumber, Vehicle } from '../models';
 import { CARS_GATEWAY, type CarsGateway } from '../ports/cars-gateway';
@@ -10,7 +10,7 @@ function isPlateComplete(plate: PlateNumber): boolean {
 
 @Injectable()
 export class MockCarsGateway implements CarsGateway {
-  constructor(private readonly db: MockDatabase) {}
+  private readonly db = inject(MockDatabase);
 
   list(): Observable<Vehicle[]> {
     return respond(this.db.vehicles.map((vehicle) => ({ ...vehicle })));

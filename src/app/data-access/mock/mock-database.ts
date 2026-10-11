@@ -10,7 +10,6 @@ import type {
 } from '../models';
 import { MOCK_APPOINTMENTS } from '../mock-data/appointments';
 import { MOCK_DAYS, MOCK_SLOTS_BY_DAY, type MockBookingDay } from '../mock-data/booking';
-import { MOCK_INVOICES } from '../mock-data/invoices';
 import { MOCK_CENTERS } from '../mock-data/service-centers';
 import { MOCK_USERS } from '../mock-data/users';
 import { MOCK_VEHICLES } from '../mock-data/vehicles';

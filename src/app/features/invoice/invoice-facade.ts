@@ -1,7 +1,7 @@
-import { Inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import type { Invoice } from '../../data-access/models';
-import { INVOICES_GATEWAY, type InvoicesGateway } from '../../data-access/ports/invoices-gateway';
+import { INVOICES_GATEWAY } from '../../data-access/ports/invoices-gateway';
 
 export type DetailState = 'idle' | 'loading' | 'ready' | 'error';
 
@@ -15,7 +15,7 @@ export class InvoiceFacade {
   readonly state = signal<DetailState>('idle');
   readonly error = signal<string | null>(null);
 
-  constructor(@Inject(INVOICES_GATEWAY) private readonly invoices: InvoicesGateway) {}
+  private readonly invoices = inject(INVOICES_GATEWAY);
 
   async load(id: string): Promise<void> {
     this.state.set('loading');

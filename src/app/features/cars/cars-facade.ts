@@ -1,7 +1,7 @@
-import { Inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import type { PlateNumber, Vehicle } from '../../data-access/models';
-import { CARS_GATEWAY, type CarsGateway } from '../../data-access/ports/cars-gateway';
+import { CARS_GATEWAY } from '../../data-access/ports/cars-gateway';
 
 export type CarsState = 'idle' | 'loading' | 'ready' | 'empty' | 'error';
 
@@ -22,7 +22,7 @@ export class CarsFacade {
   readonly confirmDeleteId = signal<string | null>(null);
   readonly deleting = signal(false);
 
-  constructor(@Inject(CARS_GATEWAY) private readonly carsGateway: CarsGateway) {}
+  private readonly carsGateway = inject(CARS_GATEWAY);
 
   async load(): Promise<void> {
     this.state.set('loading');

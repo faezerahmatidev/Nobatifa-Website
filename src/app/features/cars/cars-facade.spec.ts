@@ -1,11 +1,14 @@
-import { MockCarsGateway } from '../../data-access/mock/mock-cars-gateway';
-import { MockDatabase } from '../../data-access/mock/mock-database';
+import { TestBed } from '@angular/core/testing';
+import { provideMockDataAccess } from '../../data-access/mock/provide-mock-data-access';
 import { CarsFacade } from './cars-facade';
 
 const PLATE = { part1: '11', part2: '365', letter: 'س', iranCode: '45' };
 
 function setup(): CarsFacade {
-  return new CarsFacade(new MockCarsGateway(new MockDatabase()));
+  TestBed.configureTestingModule({
+    providers: [CarsFacade, ...provideMockDataAccess()],
+  });
+  return TestBed.inject(CarsFacade);
 }
 
 describe('CarsFacade', () => {

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import type { Observable } from 'rxjs';
 import type { Appointment } from '../models';
 import {
@@ -9,7 +9,7 @@ import { MockDatabase, respond } from './mock-database';
 
 @Injectable()
 export class MockAppointmentsGateway implements AppointmentsGateway {
-  constructor(private readonly db: MockDatabase) {}
+  private readonly db = inject(MockDatabase);
 
   list(): Observable<Appointment[]> {
     return respond(this.db.appointments.map((item) => ({ ...item })));

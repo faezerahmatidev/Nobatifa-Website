@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import type { Observable } from 'rxjs';
 import type { Appointment, BookingDay, ServiceCenter, TimeSlot } from '../models';
 import { BOOKING_GATEWAY, type BookingGateway } from '../ports/booking-gateway';
@@ -6,7 +6,7 @@ import { fail, MockDatabase, respond } from './mock-database';
 
 @Injectable()
 export class MockBookingGateway implements BookingGateway {
-  constructor(private readonly db: MockDatabase) {}
+  private readonly db = inject(MockDatabase);
 
   searchCenter(code: string): Observable<ServiceCenter> {
     const center = this.db.centers.find((item) => item.code === code.trim());
