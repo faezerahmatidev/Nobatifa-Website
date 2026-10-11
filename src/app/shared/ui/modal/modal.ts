@@ -28,15 +28,15 @@ const WIDTH_CLASSES: Record<ModalSize, string> = {
           (click)="$event.stopPropagation()"
           [class]="'w-full rounded-2xl bg-white p-6 shadow-xl ' + WIDTH_CLASSES[size()]"
         >
-          <div class="mb-4 flex items-center justify-between">
+          <div class="relative mb-4 flex items-center justify-center">
             <h2 class="text-lg font-black text-gray-900">{{ title() }}</h2>
             <button
               type="button"
               (click)="closed.emit()"
               aria-label="بستن"
-              class="rounded-lg p-1 text-gray-500"
+              class="absolute left-0 flex size-7 items-center justify-center rounded-lg border border-gray-300 text-gray-600"
             >
-              <app-icon name="x" [size]="18" />
+              <app-icon name="x" [size]="14" />
             </button>
           </div>
           <ng-content />

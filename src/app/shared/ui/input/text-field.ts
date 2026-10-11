@@ -7,14 +7,16 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="flex flex-col gap-1">
-      <label class="text-sm font-bold text-gray-800">{{ label() }}</label>
-      <input
-        [formControl]="control()"
-        [type]="type()"
-        [placeholder]="placeholder()"
-        [attr.inputmode]="inputmode()"
-        [class]="inputClasses()"
-      />
+      <label class="flex flex-col gap-1 text-sm font-bold text-gray-800">
+        {{ label() }}
+        <input
+          [formControl]="control()"
+          [type]="type()"
+          [placeholder]="placeholder()"
+          [attr.inputmode]="inputmode()"
+          [class]="inputClasses()"
+        />
+      </label>
       @if (showError() && error()) {
         <p class="text-xs text-danger-bold" role="alert">{{ error() }}</p>
       } @else if (hint()) {
@@ -39,7 +41,7 @@ export class TextField {
 
   protected inputClasses(): string {
     return (
-      'h-12 rounded-lg border bg-white px-4 text-sm text-gray-900 outline-none transition-colors placeholder:text-gray-400 focus:border-primary-base ' +
+      'h-12 rounded-lg border bg-white px-4 text-sm font-normal text-gray-900 outline-none transition-colors placeholder:text-gray-400 focus:border-primary-base ' +
       (this.showError() ? 'border-danger-base' : 'border-gray-300')
     );
   }
