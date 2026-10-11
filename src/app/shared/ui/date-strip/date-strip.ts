@@ -64,7 +64,7 @@ export class DateStrip {
     const active = this.selectedId() === id;
     return (
       'flex min-w-[68px] flex-col items-center gap-0 border-b-2 px-2 py-1 ' +
-      (active ? 'border-primary-base text-primary-bold' : 'border-transparent text-gray-500')
+      (active ? 'border-primary-base text-primary-bold' : 'border-transparent text-gray-600')
     );
   }
 
