@@ -22,6 +22,7 @@ function normalizeDigits(raw: string): string {
           maxlength="1"
           inputmode="numeric"
           autocomplete="one-time-code"
+          [attr.autofocus]="$index === 0 ? '' : null"
           [attr.aria-label]="'رقم ' + ($index + 1)"
           class="size-12 rounded-lg border border-gray-300 bg-white text-center text-lg font-bold text-gray-900 outline-none focus:border-primary-base"
         />

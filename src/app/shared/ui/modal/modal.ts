@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, ElementRef, input, output, viewChild } from '@angular/core';
 import { Icon } from '../icon/icon';
 
 export type ModalSize = 'sm' | 'md' | 'lg';
@@ -22,11 +22,13 @@ const WIDTH_CLASSES: Record<ModalSize, string> = {
         data-testid="backdrop"
       >
         <div
+          #panel
+          tabindex="-1"
           role="dialog"
           aria-modal="true"
           [attr.aria-label]="title()"
           (click)="$event.stopPropagation()"
-          [class]="'w-full rounded-2xl bg-white p-6 shadow-xl ' + WIDTH_CLASSES[size()]"
+          [class]="'w-full rounded-2xl bg-white p-6 shadow-xl outline-none ' + WIDTH_CLASSES[size()]"
         >
           <div class="relative mb-4 flex items-center justify-center">
             <h2 class="text-lg font-black text-gray-900">{{ title() }}</h2>
@@ -52,6 +54,18 @@ export class Modal {
   readonly closed = output<void>();
 
   protected readonly WIDTH_CLASSES = WIDTH_CLASSES;
+  private readonly panel = viewChild<ElementRef<HTMLElement>>('panel');
+
+  constructor() {
+    afterNextRender(() => {
+      const panel = this.panel()?.nativeElement;
+      if (!panel) {
+        return;
+      }
+      const autofocusTarget = panel.querySelector<HTMLElement>('[autofocus]');
+      (autofocusTarget ?? panel).focus();
+    });
+  }
 
   protected onEscape(): void {
     if (this.open()) {
