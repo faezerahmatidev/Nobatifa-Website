@@ -1,4 +1,5 @@
 import type { Router } from '@angular/router';
+import type { Session } from '../../core/services/session';
 import { MockAuthGateway } from '../../data-access/mock/mock-auth-gateway';
 import { MockBookingGateway } from '../../data-access/mock/mock-booking-gateway';
 import { MockCarsGateway } from '../../data-access/mock/mock-cars-gateway';
@@ -6,6 +7,7 @@ import { MockDatabase } from '../../data-access/mock/mock-database';
 import { BookingFacade } from './booking-facade';
 
 const router = { navigate: () => Promise.resolve(true) } as unknown as Router;
+const session = { refresh: () => Promise.resolve() } as unknown as Session;
 
 function setup(): BookingFacade {
   const db = new MockDatabase();
@@ -14,6 +16,7 @@ function setup(): BookingFacade {
     new MockAuthGateway(db),
     new MockCarsGateway(db),
     router,
+    session,
   );
 }
 
@@ -80,4 +83,19 @@ describe('BookingFacade', () => {
     expect(facade.cars().length).toBe(before + 1);
     expect(facade.selectedCarId()).toBe(facade.cars()[facade.cars().length - 1].id);
   });
+
+  it(
+    'logs in an existing user without opening the car modal',
+    async () => {
+      const facade = setup();
+      facade.openLogin();
+      expect(facade.authStep()).toBe('login');
+      await facade.sendOtp('09128573449');
+      expect(facade.authStep()).toBe('otp');
+      await facade.verifyOtp('1234');
+      expect(facade.authStep()).toBeNull();
+      expect(facade.carModalOpen()).toBe(false);
+    },
+    15000,
+  );
 });

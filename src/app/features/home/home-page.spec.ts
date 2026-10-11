@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { provideMockDataAccess } from '../../data-access/mock/provide-mock-data-access';
 import { HomePage } from './home-page';
 
@@ -32,4 +32,27 @@ describe('HomePage', () => {
     fixture.detectChanges();
     expect((fixture.nativeElement as HTMLElement).textContent).toContain('اتوسرویس محمد');
   }, 10000);
+});
+
+describe('HomePage with login param', () => {
+  it('opens the auth modal', async () => {
+    await TestBed.configureTestingModule({
+      imports: [HomePage],
+      providers: [
+        provideRouter([]),
+        ...provideMockDataAccess(),
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: { queryParamMap: convertToParamMap({ auth: 'login' }) } },
+        },
+      ],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(HomePage);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector('[role="dialog"]'),
+    ).toBeTruthy();
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('ورود / ثبت‌نام');
+  });
 });

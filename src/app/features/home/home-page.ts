@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LoginForm } from '../auth/login-form';
 import { OtpForm } from '../auth/otp-form';
 import { ProfileForm } from '../auth/profile-form';
@@ -179,6 +180,19 @@ import { CarSelect } from './car-select';
     </app-modal>
   `,
 })
-export class HomePage {
+export class HomePage implements OnInit {
   protected readonly facade = inject(BookingFacade);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+
+  ngOnInit(): void {
+    if (this.route.snapshot.queryParamMap.get('auth') === 'login') {
+      this.facade.openLogin();
+      void this.router.navigate([], {
+        queryParams: { auth: null },
+        queryParamsHandling: 'merge',
+        replaceUrl: true,
+      });
+    }
+  }
 }

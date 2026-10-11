@@ -5,6 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { AUTH_GATEWAY, type AuthGateway } from '../../data-access/ports/auth-gateway';
 import { BOOKING_GATEWAY, type BookingGateway } from '../../data-access/ports/booking-gateway';
 import { CARS_GATEWAY, type CarsGateway } from '../../data-access/ports/cars-gateway';
+import { Session } from '../../core/services/session';
 import type {
   Appointment,
   BookingDay,
@@ -74,6 +75,7 @@ export class BookingFacade {
     @Inject(AUTH_GATEWAY) private readonly auth: AuthGateway,
     @Inject(CARS_GATEWAY) private readonly carsGateway: CarsGateway,
     private readonly router: Router,
+    private readonly session: Session,
   ) {}
 
   async search(): Promise<void> {
@@ -177,6 +179,11 @@ export class BookingFacade {
     this.pendingSlot = null;
   }
 
+  openLogin(): void {
+    this.authError.set(null);
+    this.authStep.set('login');
+  }
+
   async openCarModal(): Promise<void> {
     this.carModalOpen.set(true);
     await this.loadCars();
@@ -271,7 +278,10 @@ export class BookingFacade {
 
   private async afterAuth(): Promise<void> {
     this.authStep.set(null);
-    await this.openCarModal();
+    await this.session.refresh();
+    if (this.pendingSlot) {
+      await this.openCarModal();
+    }
   }
 
   private async loadDays(centerId: string): Promise<void> {

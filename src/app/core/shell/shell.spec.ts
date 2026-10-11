@@ -1,12 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { provideMockDataAccess } from '../../data-access/mock/provide-mock-data-access';
 import { Shell } from './shell';
 
 describe('Shell', () => {
   it('renders header, outlet and footer', async () => {
     TestBed.configureTestingModule({
       imports: [Shell],
-      providers: [provideRouter([])],
+      providers: [provideRouter([]), ...provideMockDataAccess()],
     });
     const fixture = TestBed.createComponent(Shell);
     fixture.detectChanges();
