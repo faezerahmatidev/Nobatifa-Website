@@ -76,11 +76,19 @@ import { CarSelect } from './car-select';
             }
           </div>
           <div
-            class="hidden w-full max-w-md flex-1 items-center justify-center rounded-3xl bg-primary-pale py-16 text-primary-bold md:flex"
+            class="w-full max-w-md flex-1"
             role="img"
-            aria-label="تصویر معرفی نوبتیفا"
+            aria-label="ایلاستریشن خودرو و نقشه نوبتیفا"
           >
-            <app-icon name="map-pin" [size]="96" />
+            <svg viewBox="490 0 590 300" class="h-auto w-full">
+              <image
+                href="/illustrations/hero-desktop.svg"
+                x="0"
+                y="0"
+                width="1184"
+                height="397"
+              />
+            </svg>
           </div>
         </div>
       </div>
