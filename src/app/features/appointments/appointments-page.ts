@@ -8,9 +8,9 @@ import { LoadingState } from '../../shared/ui/states/loading-state';
 import { AppointmentsFacade } from './appointments-facade';
 
 const STATUS_BOX: Record<AppointmentStatus, string> = {
-  pending: 'border-warning-bold text-warning-bold',
-  done: 'border-success-deep text-success-deep',
-  cancelled: 'border-danger-base text-danger-base',
+  pending: 'border-warning-soft bg-warning-pale text-warning-bold',
+  done: 'border-success-soft bg-success-pale text-success-deep',
+  cancelled: 'border-danger-soft bg-danger-pale text-danger-deep',
 };
 
 const STATUS_ICON: Record<AppointmentStatus, IconName> = {
@@ -60,7 +60,7 @@ const STATUS_LABEL: Record<AppointmentStatus, string> = {
                     role="img"
                     [attr.aria-label]="statusLabel(appointment.status)"
                     [class]="
-                      'flex size-9 shrink-0 items-center justify-center rounded-lg border-2 ' +
+                      'flex size-9 shrink-0 items-center justify-center rounded-lg border ' +
                       statusBox(appointment.status)
                     "
                   >
