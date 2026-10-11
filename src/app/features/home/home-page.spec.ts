@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
+import { of } from 'rxjs';
 import { provideMockDataAccess } from '../../data-access/mock/provide-mock-data-access';
 import { HomePage } from './home-page';
 
@@ -43,7 +44,10 @@ describe('HomePage with login param', () => {
         ...provideMockDataAccess(),
         {
           provide: ActivatedRoute,
-          useValue: { snapshot: { queryParamMap: convertToParamMap({ auth: 'login' }) } },
+          useValue: {
+            snapshot: { queryParamMap: convertToParamMap({ auth: 'login' }) },
+            queryParamMap: of(convertToParamMap({ auth: 'login' })),
+          },
         },
       ],
     }).compileComponents();

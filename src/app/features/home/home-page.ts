@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoginForm } from '../auth/login-form';
@@ -195,15 +202,18 @@ export class HomePage implements OnInit {
   protected readonly facade = inject(BookingFacade);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
-    if (this.route.snapshot.queryParamMap.get('auth') === 'login') {
-      this.facade.openLogin();
-      void this.router.navigate([], {
-        queryParams: { auth: null },
-        queryParamsHandling: 'merge',
-        replaceUrl: true,
-      });
-    }
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+      if (params.get('auth') === 'login') {
+        this.facade.openLogin();
+        void this.router.navigate([], {
+          queryParams: { auth: null },
+          queryParamsHandling: 'merge',
+          replaceUrl: true,
+        });
+      }
+    });
   }
 }
