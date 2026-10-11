@@ -4,6 +4,7 @@ import { Button } from '../../shared/ui/button/button';
 import { Icon, type IconName } from '../../shared/ui/icon/icon';
 import { EmptyState } from '../../shared/ui/states/empty-state';
 import { ErrorState } from '../../shared/ui/states/error-state';
+import { toFaDigits } from '../../shared/utils/fa-digits';
 import { LoadingState } from '../../shared/ui/states/loading-state';
 import { AppointmentsFacade } from './appointments-facade';
 
@@ -69,11 +70,11 @@ const STATUS_LABEL: Record<AppointmentStatus, string> = {
                 </div>
                 <p class="flex items-center gap-2 text-sm font-bold text-gray-800">
                   <app-icon name="calendar" [size]="22" />
-                  {{ appointment.date }}
+                  {{ toFaDigits(appointment.date) }}
                 </p>
                 <p class="flex items-center gap-2 text-sm font-bold text-gray-800">
                   <app-icon name="clock" [size]="22" />
-                  {{ appointment.time }}
+                  {{ toFaDigits(appointment.time) }}
                 </p>
                 <p class="flex items-start gap-2 text-sm font-bold text-gray-800">
                   <app-icon name="map-pin" [size]="22" />
@@ -131,6 +132,7 @@ const STATUS_LABEL: Record<AppointmentStatus, string> = {
 })
 export class AppointmentsPage implements OnInit {
   protected readonly facade = inject(AppointmentsFacade);
+  protected readonly toFaDigits = toFaDigits;
 
   ngOnInit(): void {
     void this.facade.load();
