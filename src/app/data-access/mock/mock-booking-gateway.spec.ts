@@ -14,7 +14,7 @@ describe('MockBookingGateway', () => {
     const center = await firstValueFrom(gateway.searchCenter('1001'));
     expect(center.name).toBe('اتوسرویس محمد');
     const days = await firstValueFrom(gateway.getDays(center.id));
-    expect(days.length).toBe(13);
+    expect(days.length).toBe(14);
   });
 
   it('rejects unknown center codes', async () => {

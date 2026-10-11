@@ -6,6 +6,7 @@ export interface MockBookingDay extends BookingDay {
 
 const DAY_LIST: ReadonlyArray<[string, string]> = [
   ['یکشنبه', '01/11'],
+  ['دوشنبه', '01/12'],
   ['سه‌شنبه', '01/13'],
   ['چهارشنبه', '01/14'],
   ['پنجشنبه', '01/15'],

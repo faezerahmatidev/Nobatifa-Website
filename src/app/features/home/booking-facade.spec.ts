@@ -32,7 +32,7 @@ describe('BookingFacade', () => {
     facade.code.setValue('1001');
     await facade.search();
     expect(facade.center()?.name).toBe('اتوسرویس محمد');
-    expect(facade.days().length).toBe(13);
+    expect(facade.days().length).toBe(14);
     expect(facade.slotsState()).toBe('ready');
     expect(facade.slots().length).toBeGreaterThan(0);
   });
