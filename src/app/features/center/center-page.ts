@@ -119,12 +119,12 @@ import { CarSelect } from '../home/car-select';
       />
     </app-modal>
 
-    <app-modal [open]="facade.reservation() !== null" title="" (closed)="facade.closeSuccess()">
+    <app-modal [open]="facade.reservation() !== null" title="" size="lg" (closed)="facade.closeSuccess()">
       <div class="flex flex-col items-center gap-3 py-4 text-center">
         <span
-          class="flex size-16 items-center justify-center rounded-full bg-success-pale text-success-deep"
+          class="flex size-[72px] items-center justify-center rounded-full bg-success-bold text-white"
         >
-          <app-icon name="check" [size]="32" />
+          <app-icon name="check" [size]="36" />
         </span>
         <p class="font-black text-gray-900">فرآیند رزرو با موفقیت انجام شد.</p>
         <p class="text-sm text-gray-600">
@@ -133,7 +133,6 @@ import { CarSelect } from '../home/car-select';
         </p>
         <div class="mt-2 flex flex-wrap justify-center gap-2">
           <app-button (click)="facade.goToAppointments()">نمایش نوبت‌های من</app-button>
-          <app-button variant="text" (click)="facade.closeSuccess()">بستن</app-button>
         </div>
       </div>
     </app-modal>

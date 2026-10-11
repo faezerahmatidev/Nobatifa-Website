@@ -12,7 +12,7 @@ export interface DateOption {
   imports: [Icon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="flex items-center gap-1 rounded-xl border border-gray-200 bg-white p-2">
+    <div class="flex items-center gap-1 rounded-xl border border-gray-200 bg-white px-2 py-1.5">
       <button
         type="button"
         (click)="scrollBy(-1)"
@@ -34,12 +34,12 @@ export interface DateOption {
           >
             <span
               [class]="
-                selectedId() === day.id ? 'text-xs text-primary-bold' : 'text-xs text-gray-400'
+                selectedId() === day.id ? 'text-[11px] text-primary-bold' : 'text-[11px] text-gray-400'
               "
             >
               {{ day.weekday }}
             </span>
-            <span class="text-sm font-bold">{{ day.date }}</span>
+            <span class="text-[13px] font-bold">{{ day.date }}</span>
           </button>
         }
       </div>
@@ -63,7 +63,7 @@ export class DateStrip {
   protected dayClasses(id: string): string {
     const active = this.selectedId() === id;
     return (
-      'flex min-w-[76px] flex-col items-center gap-0.5 border-b-2 px-3 py-1.5 ' +
+      'flex min-w-[68px] flex-col items-center gap-0 border-b-2 px-2 py-1 ' +
       (active ? 'border-primary-base text-primary-bold' : 'border-transparent text-gray-500')
     );
   }
