@@ -58,7 +58,7 @@ import { Logo } from '../../shared/ui/logo/logo';
             @if (profileOpen()) {
               <div
                 role="menu"
-                class="absolute left-0 top-full z-10 mt-2 w-44 rounded-xl border border-gray-200 bg-white py-2 shadow-lg"
+                class="absolute left-0 top-full z-10 mt-2 w-48 rounded-xl border border-gray-200 bg-white py-2 text-center shadow-lg"
               >
                 <a
                   role="menuitem"
@@ -82,7 +82,7 @@ import { Logo } from '../../shared/ui/logo/logo';
                   role="menuitem"
                   type="button"
                   (click)="logout.emit()"
-                  class="block w-full px-4 py-2 text-right text-sm font-bold text-danger-bold"
+                  class="block w-full px-4 py-2 text-center text-sm font-bold text-danger-bold"
                 >
                   خروج
                 </button>
