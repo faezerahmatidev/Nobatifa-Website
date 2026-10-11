@@ -34,7 +34,7 @@ import { Logo } from '../../shared/ui/logo/logo';
           </a>
         </div>
       </div>
-      <div class="bg-accent-bold py-3 text-center text-xs text-white">
+      <div class="bg-accent-bold py-3 text-center text-xs text-white" dir="ltr">
         © 2025 Nobatifa. All rights reserved.
       </div>
     </footer>

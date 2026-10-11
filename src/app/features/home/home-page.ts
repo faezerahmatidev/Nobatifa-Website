@@ -43,54 +43,49 @@ import { CarSelect } from './car-select';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="bg-white">
-      <div class="mx-auto max-w-7xl px-4 py-10 md:py-14">
-        <div class="flex flex-col items-center gap-8 md:flex-row">
-          <div class="flex-1 text-center md:text-right">
-            <h1 class="text-4xl font-black text-primary-bold md:text-5xl">نوبتیفا!</h1>
-            <p class="mt-2 text-xl font-bold text-gray-900">زمان شما ارزشمند است</p>
-            <form
-              (submit)="$event.preventDefault(); facade.search()"
-              class="mx-auto mt-6 flex max-w-xl items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 p-2 md:mx-0"
-            >
-              <input
-                [formControl]="facade.code"
-                placeholder="کد اتوسرویس را وارد کنید"
-                inputmode="numeric"
-                aria-label="کد اتوسرویس"
-                class="h-11 flex-1 bg-transparent px-3 text-sm text-gray-900 outline-none placeholder:text-gray-400"
-              />
-              <button
-                type="submit"
-                aria-label="جستجو"
-                [disabled]="facade.searching()"
-                class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-primary-base text-white disabled:bg-gray-300"
-              >
-                <app-icon name="search" />
-              </button>
-            </form>
-            @if (facade.code.touched && facade.code.invalid) {
-              <p class="mt-2 text-xs text-danger-bold">کد اتوسرویس الزامی است</p>
-            }
-            @if (facade.searchError()) {
-              <p role="alert" class="mt-2 text-xs text-danger-bold">{{ facade.searchError() }}</p>
-            }
-          </div>
-          <div
-            class="w-full max-w-md flex-1"
-            role="img"
-            aria-label="ایلاستریشن خودرو و نقشه نوبتیفا"
+      <div class="mx-auto max-w-7xl px-4 py-10 lg:py-14">
+        <img
+          src="/illustrations/hero-desktop.png"
+          alt=""
+          class="hidden h-auto w-full lg:block"
+        />
+        <h1 class="text-center text-4xl font-black text-primary-bold lg:sr-only">نوبتیفا!</h1>
+        <p class="mt-2 text-center text-xl font-bold text-gray-900 lg:sr-only">
+          زمان شما ارزشمند است
+        </p>
+        <img
+          src="/illustrations/hero-car.png"
+          alt=""
+          class="mx-auto mt-6 h-auto w-full max-w-md lg:hidden"
+        />
+        <form
+          (submit)="$event.preventDefault(); facade.search()"
+          class="mx-auto mt-6 flex max-w-xl items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 p-2"
+        >
+          <input
+            [formControl]="facade.code"
+            placeholder="کد اتوسرویس را وارد کنید"
+            inputmode="numeric"
+            aria-label="کد اتوسرویس"
+            class="h-11 flex-1 bg-transparent px-3 text-sm text-gray-900 outline-none placeholder:text-gray-400"
+          />
+          <button
+            type="submit"
+            aria-label="جستجو"
+            [disabled]="facade.searching()"
+            class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-primary-base text-white disabled:bg-gray-300"
           >
-            <svg viewBox="490 0 590 300" class="h-auto w-full">
-              <image
-                href="/illustrations/hero-desktop.svg"
-                x="0"
-                y="0"
-                width="1184"
-                height="397"
-              />
-            </svg>
-          </div>
-        </div>
+            <app-icon name="search" />
+          </button>
+        </form>
+        @if (facade.code.touched && facade.code.invalid) {
+          <p class="mt-2 text-center text-xs text-danger-bold">کد اتوسرویس الزامی است</p>
+        }
+        @if (facade.searchError()) {
+          <p role="alert" class="mt-2 text-center text-xs text-danger-bold">
+            {{ facade.searchError() }}
+          </p>
+        }
       </div>
     </section>
 

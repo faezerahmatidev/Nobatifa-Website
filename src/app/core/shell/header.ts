@@ -13,7 +13,7 @@ import { Logo } from '../../shared/ui/logo/logo';
         <div class="flex items-center gap-2">
           <button
             type="button"
-            class="rounded-lg p-2 text-gray-700 md:hidden"
+            class="rounded-lg p-2 text-gray-700 lg:hidden"
             (click)="menuOpen.update((open) => !open)"
             [attr.aria-expanded]="menuOpen()"
             aria-label="منو"
@@ -25,7 +25,7 @@ import { Logo } from '../../shared/ui/logo/logo';
           </a>
         </div>
 
-        <nav class="hidden items-center gap-6 md:flex" aria-label="ناوبری اصلی">
+        <nav class="hidden items-center gap-6 lg:flex" aria-label="ناوبری اصلی">
           <a
             routerLink="/"
             routerLinkActive="font-bold text-primary-bold"
@@ -102,7 +102,7 @@ import { Logo } from '../../shared/ui/logo/logo';
       </div>
 
       @if (menuOpen()) {
-        <nav class="border-t border-gray-200 px-4 py-2 md:hidden" aria-label="منوی موبایل">
+        <nav class="border-t border-gray-200 px-4 py-2 lg:hidden" aria-label="منوی موبایل">
           <a
             routerLink="/"
             routerLinkActive="font-bold text-primary-bold"
