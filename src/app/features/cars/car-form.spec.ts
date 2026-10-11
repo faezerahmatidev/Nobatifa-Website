@@ -18,9 +18,16 @@ describe('CarForm', () => {
     let emitted: CarFormData | null = null;
     fixture.componentInstance.submitted.subscribe((data) => (emitted = data));
     const el = fixture.nativeElement as HTMLElement;
-    const typeInput = el.querySelector('input') as HTMLInputElement;
-    typeInput.value = 'پراید';
-    typeInput.dispatchEvent(new Event('input'));
+    const toggle = Array.from(el.querySelectorAll('button')).find((button) =>
+      button.textContent?.includes('انتخاب کنید'),
+    );
+    toggle?.click();
+    fixture.detectChanges();
+    const option = Array.from(el.querySelectorAll('[role="option"] button')).find(
+      (button) => (button as HTMLButtonElement).textContent?.trim() === 'پراید',
+    );
+    (option as HTMLButtonElement | undefined)?.click();
+    fixture.detectChanges();
     const inputs = el.querySelectorAll('[aria-label]');
     const setPart = (label: string, value: string): void => {
       const field = Array.from(inputs).find((node) =>
@@ -62,6 +69,6 @@ describe('CarForm', () => {
     });
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
-    expect((el.querySelector('input') as HTMLInputElement).value).toBe('کوییک');
+    expect(el.textContent).toContain('کوییک');
   });
 });

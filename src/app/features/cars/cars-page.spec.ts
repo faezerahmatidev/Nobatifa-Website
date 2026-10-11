@@ -82,10 +82,14 @@ describe('CarsPage', () => {
     fixture.detectChanges();
     const dialog = el.querySelector('[role="dialog"]') as HTMLElement;
     expect(dialog?.textContent).toContain('ویرایش خودرو');
+    const dialogEl = dialog as HTMLElement;
+    const typeButton = Array.from(dialogEl.querySelectorAll('button')).find((button) =>
+      button.textContent?.includes('پراید'),
+    );
+    expect(typeButton?.textContent).toContain('پراید');
     const inputs = dialog?.querySelectorAll('input');
-    expect((inputs?.[0] as HTMLInputElement)?.value).toBe('پراید');
-    expect((inputs?.[1] as HTMLInputElement)?.value).toBe('11');
-    expect((inputs?.[2] as HTMLInputElement)?.value).toBe('365');
-    expect((inputs?.[3] as HTMLInputElement)?.value).toBe('45');
+    expect((inputs?.[0] as HTMLInputElement)?.value).toBe('11');
+    expect((inputs?.[1] as HTMLInputElement)?.value).toBe('365');
+    expect((inputs?.[2] as HTMLInputElement)?.value).toBe('45');
   }, 10000);
 });

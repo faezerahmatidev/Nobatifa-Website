@@ -10,8 +10,8 @@ import {
 import { FormControl, Validators } from '@angular/forms';
 import type { PlateNumber } from '../../data-access/models';
 import { Button } from '../../shared/ui/button/button';
-import { TextField } from '../../shared/ui/input/text-field';
 import { PlateInput } from '../../shared/ui/plate/plate-input';
+import { VehicleTypeSelect } from '../../shared/ui/vehicle-type/vehicle-type-select';
 
 export interface CarFormData {
   type: string;
@@ -22,14 +22,13 @@ const EMPTY_PLATE: PlateNumber = { part1: '', part2: '', letter: 'الف', iranC
 
 @Component({
   selector: 'app-car-form',
-  imports: [TextField, PlateInput, Button],
+  imports: [PlateInput, Button, VehicleTypeSelect],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <form (submit)="$event.preventDefault(); submit()" class="flex flex-col gap-4">
-      <app-text-field
+      <app-vehicle-type-select
         label="نوع خودرو"
         [control]="typeControl"
-        placeholder="پراید"
         error="نوع خودرو الزامی است"
       />
       <app-plate-input [plate]="plate()" (plateChange)="plate.set($event)" />
