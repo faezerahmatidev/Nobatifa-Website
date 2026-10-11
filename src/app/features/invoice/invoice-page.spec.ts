@@ -22,7 +22,7 @@ describe('InvoicePage', () => {
     await new Promise((resolve) => setTimeout(resolve, 400));
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
-    expect(el.textContent).toContain('000085752257');
+    expect(el.textContent).toContain('۰۰۰۰۸۵۷۵۲۲۵۷');
     expect(el.textContent).toContain('مشخصات پرداخت');
     expect(el.textContent).toContain('خدمات');
   });

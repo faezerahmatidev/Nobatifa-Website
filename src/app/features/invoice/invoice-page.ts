@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ErrorState } from '../../shared/ui/states/error-state';
 import { LoadingState } from '../../shared/ui/states/loading-state';
 import { formatPlate } from '../../shared/ui/plate/plate-format';
+import { toFaDigits } from '../../shared/utils/fa-digits';
 import { InvoiceFacade } from './invoice-facade';
 
 @Component({
@@ -35,7 +36,7 @@ import { InvoiceFacade } from './invoice-facade';
                   </div>
                   <div class="flex justify-between gap-4">
                     <dt class="text-gray-500">شماره موبایل</dt>
-                    <dd class="font-bold text-gray-800">{{ invoice.customer.mobile }}</dd>
+                    <dd class="font-bold text-gray-800">{{ toFaDigits(invoice.customer.mobile) }}</dd>
                   </div>
                   <div class="flex justify-between gap-4">
                     <dt class="text-gray-500">خودرو</dt>
@@ -51,11 +52,11 @@ import { InvoiceFacade } from './invoice-facade';
                 <dl class="flex flex-col gap-2 text-sm">
                   <div class="flex justify-between gap-4">
                     <dt class="text-gray-500">کد پیگیری</dt>
-                    <dd class="font-bold text-gray-800">{{ invoice.trackingCode }}</dd>
+                    <dd class="font-bold text-gray-800">{{ toFaDigits(invoice.trackingCode) }}</dd>
                   </div>
                   <div class="flex justify-between gap-4">
                     <dt class="text-gray-500">تاریخ و زمان</dt>
-                    <dd class="font-bold text-gray-800">{{ invoice.dateTime }}</dd>
+                    <dd class="font-bold text-gray-800">{{ toFaDigits(invoice.dateTime) }}</dd>
                   </div>
                   <div class="flex justify-between gap-4">
                     <dt class="text-gray-500">اتوسرویس</dt>
@@ -81,15 +82,15 @@ import { InvoiceFacade } from './invoice-facade';
                 <dl class="flex flex-col gap-2 text-sm">
                   <div class="flex justify-between gap-4">
                     <dt class="text-gray-500">کیلومتر</dt>
-                    <dd class="font-bold text-gray-800">{{ invoice.mileageKm }}</dd>
+                    <dd class="font-bold text-gray-800">{{ toFaDigits(invoice.mileageKm) }}</dd>
                   </div>
                   <div class="flex justify-between gap-4">
                     <dt class="text-gray-500">کیلومتر بعدی</dt>
-                    <dd class="font-bold text-gray-800">{{ invoice.nextMileageKm }}</dd>
+                    <dd class="font-bold text-gray-800">{{ toFaDigits(invoice.nextMileageKm) }}</dd>
                   </div>
                   <div class="flex justify-between gap-4">
                     <dt class="text-gray-500">نوع روغن</dt>
-                    <dd class="font-bold text-gray-800">{{ invoice.oilType }}</dd>
+                    <dd class="font-bold text-gray-800">{{ toFaDigits(invoice.oilType) }}</dd>
                   </div>
                 </dl>
               </section>
@@ -103,6 +104,7 @@ import { InvoiceFacade } from './invoice-facade';
 export class InvoicePage implements OnInit {
   protected readonly facade = inject(InvoiceFacade);
   protected readonly formatPlate = formatPlate;
+  protected readonly toFaDigits = toFaDigits;
   private readonly route = inject(ActivatedRoute);
   private invoiceId = '';
 
