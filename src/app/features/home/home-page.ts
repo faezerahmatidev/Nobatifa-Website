@@ -125,11 +125,8 @@ import { CarSelect } from './car-select';
       </section>
     }
 
-    <app-modal
-      [open]="facade.authStep() !== null"
-      [title]="facade.authTitle()"
-      (closed)="facade.closeAuth()"
-    >
+    @if (facade.authStep() !== null) {
+      <app-modal [open]="true" [title]="facade.authTitle()" (closed)="facade.closeAuth()">
       @switch (facade.authStep()) {
         @case ('login') {
           <app-login-form
@@ -156,14 +153,11 @@ import { CarSelect } from './car-select';
           />
         }
       }
-    </app-modal>
+      </app-modal>
+    }
 
-    <app-modal
-      [open]="facade.carModalOpen()"
-      title="انتخاب خودرو"
-      size="lg"
-      (closed)="facade.closeCarModal()"
-    >
+    @if (facade.carModalOpen()) {
+      <app-modal [open]="true" title="انتخاب خودرو" size="lg" (closed)="facade.closeCarModal()">
       <app-car-select
         [summary]="facade.selectionSummary()"
         [cars]="facade.cars()"
@@ -177,9 +171,11 @@ import { CarSelect } from './car-select';
         (retried)="facade.loadCars()"
         (carCreated)="facade.addCar($event.type, $event.plate)"
       />
-    </app-modal>
+      </app-modal>
+    }
 
-    <app-modal [open]="facade.reservation() !== null" title="" (closed)="facade.closeSuccess()">
+    @if (facade.reservation() !== null) {
+      <app-modal [open]="true" title="" (closed)="facade.closeSuccess()">
       <div class="flex flex-col items-center gap-3 py-4 text-center">
         <span
           class="flex size-16 items-center justify-center rounded-full bg-success-pale text-success-deep"
@@ -195,7 +191,8 @@ import { CarSelect } from './car-select';
           <app-button variant="text" (click)="facade.closeSuccess()">بستن</app-button>
         </div>
       </div>
-    </app-modal>
+      </app-modal>
+    }
   `,
 })
 export class HomePage implements OnInit {

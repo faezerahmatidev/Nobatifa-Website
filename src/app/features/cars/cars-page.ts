@@ -81,18 +81,20 @@ import { CarsFacade } from './cars-facade';
       }
     </section>
 
-    <app-modal
-      [open]="facade.modalOpen()"
-      [title]="facade.editing() ? 'ویرایش خودرو' : 'خودروی جدید'"
-      (closed)="facade.closeModal()"
-    >
-      <app-car-form
-        [initial]="facade.editing()"
-        [saving]="facade.saving()"
-        [serverError]="facade.formError()"
-        (submitted)="facade.save($event.type, $event.plate)"
-      />
-    </app-modal>
+    @if (facade.modalOpen()) {
+      <app-modal
+        [open]="true"
+        [title]="facade.editing() ? 'ویرایش خودرو' : 'خودروی جدید'"
+        (closed)="facade.closeModal()"
+      >
+        <app-car-form
+          [initial]="facade.editing()"
+          [saving]="facade.saving()"
+          [serverError]="facade.formError()"
+          (submitted)="facade.save($event.type, $event.plate)"
+        />
+      </app-modal>
+    }
 
     <app-modal
       [open]="facade.confirmDeleteId() !== null"
