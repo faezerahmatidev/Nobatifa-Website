@@ -42,6 +42,18 @@ describe('CarForm', () => {
     });
   });
 
+  it('shows a plate error when the plate is incomplete', () => {
+    const fixture = TestBed.createComponent(CarForm);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const typeInput = el.querySelector('input') as HTMLInputElement;
+    typeInput.value = 'پراید';
+    typeInput.dispatchEvent(new Event('input'));
+    (el.querySelector('form') as HTMLFormElement).dispatchEvent(new Event('submit'));
+    fixture.detectChanges();
+    expect(el.textContent).toContain('پلاک خودرو کامل نیست');
+  });
+
   it('prefills initial values in edit mode', () => {
     const fixture = TestBed.createComponent(CarForm);
     fixture.componentRef.setInput('initial', {

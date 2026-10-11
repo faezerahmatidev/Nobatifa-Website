@@ -36,7 +36,6 @@ const BOX =
         class="w-20 {{ BOX }}"
         aria-label="حرف پلاک"
       >
-        <option value="">الف</option>
         @for (letter of letters; track letter) {
           <option [value]="letter">{{ letter }}</option>
         }
@@ -53,7 +52,7 @@ const BOX =
   `,
 })
 export class PlateInput {
-  readonly plate = model<PlateNumber>({ part1: '', part2: '', letter: '', iranCode: '' });
+  readonly plate = model<PlateNumber>({ part1: '', part2: '', letter: 'الف', iranCode: '' });
 
   protected readonly BOX = BOX;
   protected readonly letters = LETTERS;

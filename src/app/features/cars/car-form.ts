@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   input,
   OnInit,
   output,
@@ -17,7 +18,7 @@ export interface CarFormData {
   plate: PlateNumber;
 }
 
-const EMPTY_PLATE: PlateNumber = { part1: '', part2: '', letter: '', iranCode: '' };
+const EMPTY_PLATE: PlateNumber = { part1: '', part2: '', letter: 'الف', iranCode: '' };
 
 @Component({
   selector: 'app-car-form',
@@ -32,6 +33,9 @@ const EMPTY_PLATE: PlateNumber = { part1: '', part2: '', letter: '', iranCode: '
         error="نوع خودرو الزامی است"
       />
       <app-plate-input [plate]="plate()" (plateChange)="plate.set($event)" />
+      @if (showPlateError()) {
+        <p role="alert" class="text-xs text-danger-bold">پلاک خودرو کامل نیست</p>
+      }
       @if (serverError()) {
         <p role="alert" class="text-xs text-danger-bold">{{ serverError() }}</p>
       }
@@ -50,6 +54,14 @@ export class CarForm implements OnInit {
     nonNullable: true,
   });
   protected readonly plate = signal<PlateNumber>({ ...EMPTY_PLATE });
+  protected readonly submitAttempted = signal(false);
+  protected readonly showPlateError = computed(() => {
+    if (!this.submitAttempted()) {
+      return false;
+    }
+    const plate = this.plate();
+    return !(plate.part1 && plate.part2 && plate.letter && plate.iranCode);
+  });
 
   ngOnInit(): void {
     const initial = this.initial();
@@ -64,6 +76,7 @@ export class CarForm implements OnInit {
     const complete = Boolean(plate.part1 && plate.part2 && plate.letter && plate.iranCode);
     if (this.typeControl.invalid || !complete) {
       this.typeControl.markAsTouched();
+      this.submitAttempted.set(true);
       return;
     }
     this.submitted.emit({ type: this.typeControl.value.trim(), plate: { ...plate } });
