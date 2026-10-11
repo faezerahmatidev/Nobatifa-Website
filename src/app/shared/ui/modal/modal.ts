@@ -2,6 +2,7 @@ import { afterRenderEffect, ChangeDetectionStrategy, Component, ElementRef, inpu
 import { Icon } from '../icon/icon';
 
 export type ModalSize = 'sm' | 'md' | 'lg';
+export type ModalTitleAlign = 'start' | 'center';
 
 const WIDTH_CLASSES: Record<ModalSize, string> = {
   sm: 'max-w-sm',
@@ -30,17 +31,31 @@ const WIDTH_CLASSES: Record<ModalSize, string> = {
           (click)="$event.stopPropagation()"
           [class]="'w-full rounded-2xl bg-white p-6 shadow-xl outline-none ' + WIDTH_CLASSES[size()]"
         >
-          <div class="mb-4 flex items-center gap-2">
-            <button
-              type="button"
-              (click)="closed.emit()"
-              aria-label="بستن"
-              class="flex size-7 shrink-0 items-center justify-center rounded-lg border border-gray-300 text-gray-600"
-            >
-              <app-icon name="x" [size]="14" />
-            </button>
-            <h2 class="text-lg font-black text-gray-900">{{ title() }}</h2>
-          </div>
+          @if (align() === 'center') {
+            <div class="relative mb-4 flex items-center justify-center">
+              <h2 class="text-lg font-black text-gray-900">{{ title() }}</h2>
+              <button
+                type="button"
+                (click)="closed.emit()"
+                aria-label="بستن"
+                class="absolute right-0 flex size-7 items-center justify-center rounded-lg border border-gray-300 text-gray-600"
+              >
+                <app-icon name="x" [size]="14" />
+              </button>
+            </div>
+          } @else {
+            <div class="mb-4 flex items-center gap-2">
+              <button
+                type="button"
+                (click)="closed.emit()"
+                aria-label="بستن"
+                class="flex size-7 shrink-0 items-center justify-center rounded-lg border border-gray-300 text-gray-600"
+              >
+                <app-icon name="x" [size]="14" />
+              </button>
+              <h2 class="text-lg font-black text-gray-900">{{ title() }}</h2>
+            </div>
+          }
           <ng-content />
         </div>
       </div>
@@ -51,6 +66,7 @@ export class Modal {
   readonly open = input.required<boolean>();
   readonly title = input('');
   readonly size = input<ModalSize>('md');
+  readonly align = input<ModalTitleAlign>('center');
   readonly closed = output<void>();
 
   protected readonly WIDTH_CLASSES = WIDTH_CLASSES;

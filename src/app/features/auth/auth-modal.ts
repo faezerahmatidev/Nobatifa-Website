@@ -11,7 +11,13 @@ import { ProfileForm, type ProfileData } from './profile-form';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (step() !== null) {
-      <app-modal [open]="true" [title]="title()" size="sm" (closed)="closed.emit()">
+      <app-modal
+        [open]="true"
+        [title]="title()"
+        size="sm"
+        [align]="step() === 'login' ? 'start' : 'center'"
+        (closed)="closed.emit()"
+      >
         @switch (step()) {
           @case ('login') {
             <app-login-form
