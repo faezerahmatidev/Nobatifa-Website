@@ -27,4 +27,13 @@ describe('ProfileForm', () => {
     );
     expect(emitted).toBe(false);
   });
+
+  it('prefills inputs from initial data', () => {
+    const fixture = TestBed.createComponent(ProfileForm);
+    fixture.componentRef.setInput('initial', { firstName: 'فائزه', lastName: 'رحمتی' });
+    fixture.detectChanges();
+    const inputs = (fixture.nativeElement as HTMLElement).querySelectorAll('input');
+    expect((inputs[0] as HTMLInputElement).value).toBe('فائزه');
+    expect((inputs[1] as HTMLInputElement).value).toBe('رحمتی');
+  });
 });
