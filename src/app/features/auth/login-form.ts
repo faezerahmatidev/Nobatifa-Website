@@ -23,7 +23,11 @@ import { TextField } from '../../shared/ui/input/text-field';
       @if (serverError()) {
         <p role="alert" class="text-xs text-danger-bold">{{ serverError() }}</p>
       }
-      <app-button type="submit" [fullWidth]="true" [disabled]="busy()">
+      <app-button
+        type="submit"
+        [fullWidth]="true"
+        [disabled]="busy() || mobile.invalid"
+      >
         ارسال کد تایید
       </app-button>
     </form>

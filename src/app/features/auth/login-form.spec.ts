@@ -8,6 +8,18 @@ function setMobile(fixture: { nativeElement: unknown }, value: string): void {
 }
 
 describe('LoginForm', () => {
+  it('disables the submit button until a valid number is entered', () => {
+    const fixture = TestBed.createComponent(LoginForm);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const button = el.querySelector('button[type="submit"]') as HTMLButtonElement;
+    expect(button.disabled).toBe(true);
+    setMobile(fixture, '09123456789');
+    fixture.detectChanges();
+    expect((el.querySelector('button[type="submit"]') as HTMLButtonElement).disabled).toBe(
+      false,
+    );
+  });
   it('does not submit invalid numbers', () => {
     const fixture = TestBed.createComponent(LoginForm);
     fixture.detectChanges();
