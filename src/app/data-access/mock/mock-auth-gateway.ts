@@ -26,8 +26,12 @@ export class MockAuthGateway implements AuthGateway {
     if (mobile.trim() !== this.db.pendingMobile || code.trim() !== this.db.lastOtp) {
       return fail('کد تایید نادرست است');
     }
-    const isNewUser = !this.db.users.some((user) => user.mobile === mobile.trim());
-    return respond({ isNewUser });
+    const existing = this.db.users.find((user) => user.mobile === mobile.trim());
+    if (!existing) {
+      return respond({ isNewUser: true });
+    }
+    this.db.session = { user: { ...existing } };
+    return respond({ isNewUser: false });
   }
 
   completeProfile(firstName: string, lastName: string): Observable<User> {
