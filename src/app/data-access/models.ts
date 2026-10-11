@@ -1,0 +1,79 @@
+/** Domain models — derived from UserFlow and Figma screens. */
+
+export type SlotStatus = 'available' | 'closed' | 'reserved';
+
+export type AppointmentStatus = 'pending' | 'done' | 'cancelled';
+
+export interface User {
+  readonly id: string;
+  firstName: string;
+  lastName: string;
+  /** Iranian mobile number, e.g. 09128567349 */
+  mobile: string;
+}
+
+/** Iranian plate: e.g. 11 365 س 45 */
+export interface PlateNumber {
+  part1: string;
+  part2: string;
+  letter: string;
+  iranCode: string;
+}
+
+export interface Vehicle {
+  readonly id: string;
+  type: string;
+  plate: PlateNumber;
+}
+
+export interface ServiceCenter {
+  readonly id: string;
+  code: string;
+  name: string;
+  address: string;
+}
+
+export interface TimeSlot {
+  readonly id: string;
+  date: string;
+  time: string;
+  status: SlotStatus;
+}
+
+export interface Appointment {
+  readonly id: string;
+  serviceCenter: ServiceCenter;
+  date: string;
+  time: string;
+  vehicle: Vehicle;
+  status: AppointmentStatus;
+}
+
+export interface InvoiceItem {
+  title: string;
+  amountRial: number;
+}
+
+export interface Invoice {
+  readonly id: string;
+  trackingCode: string;
+  customer: Pick<User, 'firstName' | 'lastName' | 'mobile'>;
+  vehicle: Vehicle;
+  serviceCenterName: string;
+  dateTime: string;
+  items: readonly InvoiceItem[];
+  totalRial: number;
+  mileageKm: number;
+  nextMileageKm: number;
+  oilType: string;
+}
+
+/** Frontend-only mock session. NOT a security boundary. */
+export interface AuthSession {
+  user: User;
+}
+
+export interface ApiResponse<T> {
+  data: T;
+  message?: string;
+}
