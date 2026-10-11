@@ -1,15 +1,17 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DestroyRef } from '@angular/core';
 import { AuthModal } from '../auth/auth-modal';
 import { Icon } from '../../shared/ui/icon/icon';
+import { SubmitOnEnter } from '../../shared/ui/form/submit-on-enter';
 import { BookingFacade } from './booking-facade';
 
 @Component({
   selector: 'app-home-page',
-  imports: [ReactiveFormsModule, AuthModal, Icon],
+  imports: [ReactiveFormsModule, AuthModal, Icon, SubmitOnEnter],
   providers: [BookingFacade],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -30,6 +32,7 @@ import { BookingFacade } from './booking-facade';
           class="mx-auto mt-6 h-auto w-full max-w-md lg:hidden"
         />
         <form
+          appSubmitOnEnter
           (submit)="$event.preventDefault(); search()"
           class="mx-auto mt-6 flex max-w-xl items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 p-2"
         >
@@ -80,16 +83,21 @@ export class HomePage implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly platformId = inject(PLATFORM_ID);
 
   ngOnInit(): void {
     this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       if (params.get('auth') === 'login') {
         this.facade.openLogin();
-        void this.router.navigate([], {
-          queryParams: { auth: null },
-          queryParamsHandling: 'merge',
-          replaceUrl: true,
-        });
+        // روی سرور نویگیت نکن: در SSR تبدیل به ریدایرکت 302 می‌شود و
+        // کوئری را قبل از هایدریشن می‌اندازد. پاک‌سازی URL فقط در مرورگر.
+        if (isPlatformBrowser(this.platformId)) {
+          void this.router.navigate([], {
+            queryParams: { auth: null },
+            queryParamsHandling: 'merge',
+            replaceUrl: true,
+          });
+        }
       }
     });
   }
