@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, input, model } from '@angular/core';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  input,
+  model,
+} from '@angular/core';
 
 const FA_DIGITS = '۰۱۲۳۴۵۶۷۸۹';
 
@@ -33,6 +42,17 @@ function normalizeDigits(raw: string): string {
 export class OtpInput {
   readonly length = input(4);
   readonly code = model('');
+
+  private readonly elementRef = inject(ElementRef);
+
+  constructor() {
+    afterNextRender(() => {
+      if (document.activeElement !== document.body) {
+        return;
+      }
+      this.elementRef.nativeElement.querySelector('input')?.focus();
+    });
+  }
 
   protected readonly digits = computed(() => {
     const chars = normalizeDigits(this.code()).slice(0, this.length()).split('');

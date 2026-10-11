@@ -1,4 +1,4 @@
-import { afterNextRender, ChangeDetectionStrategy, Component, ElementRef, input, output, viewChild } from '@angular/core';
+import { afterRenderEffect, ChangeDetectionStrategy, Component, ElementRef, input, output, viewChild } from '@angular/core';
 import { Icon } from '../icon/icon';
 
 export type ModalSize = 'sm' | 'md' | 'lg';
@@ -57,13 +57,19 @@ export class Modal {
   private readonly panel = viewChild<ElementRef<HTMLElement>>('panel');
 
   constructor() {
-    afterNextRender(() => {
-      const panel = this.panel()?.nativeElement;
-      if (!panel) {
+    afterRenderEffect(() => {
+      if (!this.open()) {
         return;
       }
-      const autofocusTarget = panel.querySelector<HTMLElement>('[autofocus]');
-      (autofocusTarget ?? panel).focus();
+      const panel = this.panel()?.nativeElement;
+      if (!panel || panel.contains(document.activeElement)) {
+        return;
+      }
+      const target =
+        panel.querySelector<HTMLElement>('input') ??
+        panel.querySelector<HTMLElement>('[autofocus]') ??
+        panel;
+      target.focus({ preventScroll: true });
     });
   }
 
