@@ -7,7 +7,7 @@ export const MOCK_INVOICES: readonly Invoice[] = [
   {
     id: 'inv1',
     trackingCode: '000085752257',
-    customer: { firstName: 'علیرضا', lastName: 'رمضانی', mobile: '09128573449' },
+    customer: { firstName: 'فائزه', lastName: 'رحمتی', mobile: '09227521450' },
     vehicle: CAR,
     serviceCenterName: 'اتوسرویس محمد',
     dateTime: '1403/10/16، 9:50',

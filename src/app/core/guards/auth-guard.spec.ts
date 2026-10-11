@@ -21,9 +21,9 @@ describe('authGuard', () => {
   it('allows logged-in users', async () => {
     TestBed.inject(Session).setUser({
       id: 'u1',
-      firstName: 'علیرضا',
-      lastName: 'رمضانی',
-      mobile: '09128573449',
+      firstName: 'فائزه',
+      lastName: 'رحمتی',
+      mobile: '09227521450',
     });
     await expect(runGuard()).resolves.toBe(true);
   });

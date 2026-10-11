@@ -37,13 +37,13 @@ describe('Header', () => {
 
   it('shows the user name and profile menu when logged in', () => {
     const fixture = TestBed.createComponent(Header);
-    fixture.componentRef.setInput('userName', 'علیرضا رمضانی');
+    fixture.componentRef.setInput('userName', 'فائزه رحمتی');
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
-    expect(el.textContent).toContain('علیرضا رمضانی');
+    expect(el.textContent).toContain('فائزه رحمتی');
     expect(el.textContent).not.toContain('ورود');
     expect(el.querySelector('[role="menu"]')).toBeNull();
-    buttonByText(el, 'علیرضا رمضانی')?.click();
+    buttonByText(el, 'فائزه رحمتی')?.click();
     fixture.detectChanges();
     const menu = el.querySelector('[role="menu"]');
     expect(menu?.textContent ?? '').toContain('نوبت‌های من');
@@ -53,12 +53,12 @@ describe('Header', () => {
 
   it('emits logout when خروج is clicked', () => {
     const fixture = TestBed.createComponent(Header);
-    fixture.componentRef.setInput('userName', 'علیرضا رمضانی');
+    fixture.componentRef.setInput('userName', 'فائزه رحمتی');
     fixture.detectChanges();
     let emitted = false;
     fixture.componentInstance.logout.subscribe(() => (emitted = true));
     const el = fixture.nativeElement as HTMLElement;
-    buttonByText(el, 'علیرضا رمضانی')?.click();
+    buttonByText(el, 'فائزه رحمتی')?.click();
     fixture.detectChanges();
     buttonByText(el, 'خروج')?.click();
     expect(emitted).toBe(true);

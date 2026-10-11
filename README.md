@@ -58,7 +58,7 @@ npx ng build     # production build
 - Latency: 150ms per call (`MOCK_LATENCY_MS`).
 - Fixed OTP code: `1234`.
 - Demo service-center code: `1001`.
-- Demo user: علیرضا رمضانی / `09128573449`.
+- Demo user: فائزه رحمتی / `09227521450`.
 
 ## Authentication limitation
 

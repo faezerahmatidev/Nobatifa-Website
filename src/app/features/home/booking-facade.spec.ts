@@ -96,7 +96,7 @@ describe('BookingFacade', () => {
       const facade = setup();
       facade.openLogin();
       expect(facade.authStep()).toBe('login');
-      await facade.sendOtp('09128573449');
+      await facade.sendOtp('09227521450');
       expect(facade.authStep()).toBe('otp');
       await facade.verifyOtp('1234');
       expect(facade.authStep()).toBeNull();
