@@ -5,6 +5,7 @@ import { Button } from '../../shared/ui/button/button';
 import { Icon } from '../../shared/ui/icon/icon';
 import { TextField } from '../../shared/ui/input/text-field';
 import { PlateInput } from '../../shared/ui/plate/plate-input';
+import { formatPlate } from '../../shared/ui/plate/plate-format';
 import { ErrorState } from '../../shared/ui/states/error-state';
 import { LoadingState } from '../../shared/ui/states/loading-state';
 import type { CarsState } from './booking-facade';
@@ -56,7 +57,7 @@ export interface NewCarData {
               [attr.aria-pressed]="selectedCarId() === car.id"
               [class]="carClasses(car.id)"
             >
-              <span class="text-sm">{{ car.type }} | {{ plateText(car) }}</span>
+              <span class="text-sm">{{ car.type }} | {{ formatPlate(car.plate) }}</span>
               @if (selectedCarId() === car.id) {
                 <app-icon name="check" [size]="18" />
               }
@@ -102,10 +103,7 @@ export class CarSelect {
     iranCode: '',
   });
 
-  protected plateText(vehicle: Vehicle): string {
-    const plate = vehicle.plate;
-    return `${plate.part1} ${plate.part2} ${plate.letter} ${plate.iranCode}`;
-  }
+  protected readonly formatPlate = formatPlate;
 
   protected carClasses(id: string): string {
     const selected = this.selectedCarId() === id;
