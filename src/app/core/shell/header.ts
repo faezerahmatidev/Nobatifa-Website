@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, input, output, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Button } from '../../shared/ui/button/button';
 import { Icon } from '../../shared/ui/icon/icon';
@@ -8,6 +8,10 @@ import { Logo } from '../../shared/ui/logo/logo';
   selector: 'app-header',
   imports: [RouterLink, RouterLinkActive, Button, Icon, Logo],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(document:click)': 'onDocumentClick($event)',
+    '(document:keydown.escape)': 'closeMenus()',
+  },
   template: `
     <header class="border-b border-gray-200 bg-white">
       <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
@@ -101,6 +105,16 @@ import { Logo } from '../../shared/ui/logo/logo';
                 </app-button>
                 <app-button
                   role="menuitem"
+                  variant="text"
+                  size="lg"
+                  [fullWidth]="true"
+                  (click)="onEditProfile()"
+                >
+                  <app-icon name="pencil" [size]="18" />
+                  ویرایش اطلاعات
+                </app-button>
+                <app-button
+                  role="menuitem"
                   variant="danger"
                   size="lg"
                   [fullWidth]="true"
@@ -152,13 +166,31 @@ export class Header {
   readonly userName = input<string | null>(null);
   readonly login = output<void>();
   readonly logout = output<void>();
+  readonly editProfile = output<void>();
 
   protected readonly menuOpen = signal(false);
   protected readonly profileOpen = signal(false);
+  private readonly elementRef = inject(ElementRef);
   private readonly router = inject(Router);
 
   protected goTo(path: string): void {
-    this.profileOpen.set(false);
+    this.closeMenus();
     void this.router.navigate([path]);
+  }
+
+  protected onEditProfile(): void {
+    this.closeMenus();
+    this.editProfile.emit();
+  }
+
+  protected closeMenus(): void {
+    this.menuOpen.set(false);
+    this.profileOpen.set(false);
+  }
+
+  protected onDocumentClick(event: MouseEvent): void {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      this.closeMenus();
+    }
   }
 }

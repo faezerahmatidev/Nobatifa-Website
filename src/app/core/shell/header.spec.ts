@@ -48,6 +48,7 @@ describe('Header', () => {
     const menu = el.querySelector('[role="menu"]');
     expect(menu?.textContent ?? '').toContain('نوبت‌های من');
     expect(menu?.textContent ?? '').toContain('خودروهای من');
+    expect(menu?.textContent ?? '').toContain('ویرایش اطلاعات');
     expect(menu?.textContent ?? '').toContain('خروج');
   });
 
@@ -64,8 +65,7 @@ describe('Header', () => {
     expect(emitted).toBe(true);
   });
 
-  it('toggles the mobile menu', () => {
-    const fixture = TestBed.createComponent(Header);
+  it('toggles the mobile menu', () => {    const fixture = TestBed.createComponent(Header);
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
     expect(el.querySelector('[aria-label="منوی موبایل"]')).toBeNull();
