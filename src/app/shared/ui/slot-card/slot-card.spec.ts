@@ -9,7 +9,11 @@ describe('SlotCard', () => {
     fixture.detectChanges();
     let emitted = false;
     fixture.componentInstance.reserve.subscribe(() => (emitted = true));
-    ((fixture.nativeElement as HTMLElement).querySelector('button') as HTMLButtonElement).click();
+    const button = (fixture.nativeElement as HTMLElement).querySelector(
+      'button',
+    ) as HTMLButtonElement;
+    expect(button.querySelector('img')).toBeTruthy();
+    button.click();
     expect(emitted).toBe(true);
   });
 

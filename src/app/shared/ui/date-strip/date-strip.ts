@@ -12,16 +12,19 @@ export interface DateOption {
   imports: [Icon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="flex items-center gap-1">
+    <div class="flex items-center gap-1 rounded-xl border border-gray-200 bg-white p-2">
       <button
         type="button"
         (click)="scrollBy(-1)"
         aria-label="روزهای قبل"
-        class="rounded-lg p-2 text-gray-600"
+        class="shrink-0 rounded-lg p-2 text-gray-600"
       >
         <app-icon name="chevron-right" [size]="18" />
       </button>
-      <div #scroller class="flex flex-1 gap-2 overflow-x-auto px-1 py-2">
+      <div
+        #scroller
+        class="flex flex-1 gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
         @for (day of days(); track day.id) {
           <button
             type="button"
@@ -29,7 +32,13 @@ export interface DateOption {
             [attr.aria-pressed]="selectedId() === day.id"
             [class]="dayClasses(day.id)"
           >
-            <span class="text-xs">{{ day.weekday }}</span>
+            <span
+              [class]="
+                selectedId() === day.id ? 'text-xs text-primary-bold' : 'text-xs text-gray-400'
+              "
+            >
+              {{ day.weekday }}
+            </span>
             <span class="text-sm font-bold">{{ day.date }}</span>
           </button>
         }
@@ -38,7 +47,7 @@ export interface DateOption {
         type="button"
         (click)="scrollBy(1)"
         aria-label="روزهای بعد"
-        class="rounded-lg p-2 text-gray-600"
+        class="shrink-0 rounded-lg p-2 text-gray-600"
       >
         <app-icon name="chevron-left" [size]="18" />
       </button>
@@ -54,10 +63,8 @@ export class DateStrip {
   protected dayClasses(id: string): string {
     const active = this.selectedId() === id;
     return (
-      'flex min-w-20 flex-col items-center gap-1 rounded-xl border-b-2 px-3 py-2 ' +
-      (active
-        ? 'border-primary-base font-bold text-primary-bold'
-        : 'border-transparent text-gray-500')
+      'flex min-w-[76px] flex-col items-center gap-0.5 border-b-2 px-3 py-1.5 ' +
+      (active ? 'border-primary-base text-primary-bold' : 'border-transparent text-gray-500')
     );
   }
 

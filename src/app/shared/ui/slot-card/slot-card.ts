@@ -9,7 +9,7 @@ import { Icon } from '../icon/icon';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
-      class="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3"
+      class="flex items-center justify-between gap-2 rounded-xl border border-gray-200 bg-white px-4 py-3"
     >
       <span class="flex items-center gap-2 text-sm font-bold text-gray-800">
         <app-icon name="clock" [size]="18" />
@@ -17,16 +17,25 @@ import { Icon } from '../icon/icon';
       </span>
       @switch (status()) {
         @case ('available') {
-          <app-button size="sm" (click)="reserve.emit()">رزرو</app-button>
+          <app-button size="sm" (click)="reserve.emit()">
+            رزرو
+            <img src="/icons/arrow-left.svg" alt="" width="12" height="10" />
+          </app-button>
         }
         @case ('closed') {
-          <span class="inline-flex items-center gap-1 text-sm font-bold text-danger-bold">
-            <app-icon name="lock" [size]="16" />
+          <span
+            class="inline-flex h-8 items-center gap-1 rounded-lg bg-danger-base px-4 text-xs font-bold text-white"
+          >
             تعطیل
+            <app-icon name="lock" [size]="14" />
           </span>
         }
         @case ('reserved') {
-          <span class="text-sm text-gray-400">رزرو شده</span>
+          <span
+            class="inline-flex h-8 items-center rounded-lg bg-gray-200 px-4 text-xs text-gray-500"
+          >
+            رزرو شده
+          </span>
         }
       }
     </div>
