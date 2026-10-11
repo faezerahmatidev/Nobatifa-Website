@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, input, model, output } from '@angular/core';
 import { Button } from '../../shared/ui/button/button';
 import { OtpInput } from '../../shared/ui/otp/otp-input';
+import { SubmitOnEnter } from '../../shared/ui/form/submit-on-enter';
 
 @Component({
   selector: 'app-otp-form',
-  imports: [OtpInput, Button],
+  imports: [OtpInput, Button, SubmitOnEnter],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <p class="text-sm leading-6 text-gray-600">
@@ -13,9 +14,9 @@ import { OtpInput } from '../../shared/ui/otp/otp-input';
         ویرایش
       </button>
     </p>
-    <div class="my-4">
+    <form appSubmitOnEnter (submit)="$event.preventDefault(); submit()" class="my-4">
       <app-otp-input [(code)]="code" />
-    </div>
+    </form>
     <button
       type="button"
       (click)="resendRequested.emit()"
@@ -27,6 +28,7 @@ import { OtpInput } from '../../shared/ui/otp/otp-input';
       <p role="alert" class="mb-4 text-xs text-danger-bold">{{ serverError() }}</p>
     }
     <app-button
+      type="submit"
       [fullWidth]="true"
       [disabled]="code().length !== 4 || busy()"
       (click)="submit()"

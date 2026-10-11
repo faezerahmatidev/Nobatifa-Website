@@ -1,16 +1,17 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Button } from '../../shared/ui/button/button';
+import { SubmitOnEnter } from '../../shared/ui/form/submit-on-enter';
 
 @Component({
   selector: 'app-login-form',
-  imports: [ReactiveFormsModule, Button],
+  imports: [ReactiveFormsModule, Button, SubmitOnEnter],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <p class="mb-6 text-center text-sm leading-7 text-gray-500">
       شماره موبایل خود را وارد کنید سپس کد تایید پیامک شده را وارد کنید.
     </p>
-    <form (submit)="$event.preventDefault(); submit()" class="flex flex-col gap-8">
+    <form appSubmitOnEnter (submit)="$event.preventDefault(); submit()" class="flex flex-col gap-8">
       <div class="flex flex-col gap-1">
         <input
           [formControl]="mobile"

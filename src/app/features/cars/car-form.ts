@@ -11,6 +11,7 @@ import { FormControl, Validators } from '@angular/forms';
 import type { PlateNumber } from '../../data-access/models';
 import { Button } from '../../shared/ui/button/button';
 import { PlateInput } from '../../shared/ui/plate/plate-input';
+import { SubmitOnEnter } from '../../shared/ui/form/submit-on-enter';
 import { VehicleTypeSelect } from '../../shared/ui/vehicle-type/vehicle-type-select';
 
 export interface CarFormData {
@@ -22,10 +23,10 @@ const EMPTY_PLATE: PlateNumber = { part1: '', part2: '', letter: 'الف', iranC
 
 @Component({
   selector: 'app-car-form',
-  imports: [PlateInput, Button, VehicleTypeSelect],
+  imports: [PlateInput, Button, VehicleTypeSelect, SubmitOnEnter],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <form (submit)="$event.preventDefault(); submit()" class="flex flex-col gap-4">
+    <form appSubmitOnEnter (submit)="$event.preventDefault(); submit()" class="flex flex-col gap-4">
       <app-vehicle-type-select
         label="نوع خودرو"
         [control]="typeControl"

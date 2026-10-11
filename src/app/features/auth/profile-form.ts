@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import { FormControl, Validators } from '@angular/forms';
 import { Button } from '../../shared/ui/button/button';
 import { TextField } from '../../shared/ui/input/text-field';
+import { SubmitOnEnter } from '../../shared/ui/form/submit-on-enter';
 
 export interface ProfileData {
   firstName: string;
@@ -10,10 +11,10 @@ export interface ProfileData {
 
 @Component({
   selector: 'app-profile-form',
-  imports: [TextField, Button],
+  imports: [TextField, Button, SubmitOnEnter],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <form (submit)="$event.preventDefault(); submit()" class="flex flex-col gap-4">
+    <form appSubmitOnEnter (submit)="$event.preventDefault(); submit()" class="flex flex-col gap-4">
       <app-text-field label="نام" [control]="firstName" error="نام الزامی است" />
       <app-text-field label="نام خانوادگی" [control]="lastName" error="نام خانوادگی الزامی است" />
       @if (serverError()) {
