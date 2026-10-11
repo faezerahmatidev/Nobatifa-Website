@@ -1,0 +1,35 @@
+import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { provideMockDataAccess } from '../../data-access/mock/provide-mock-data-access';
+import { HomePage } from './home-page';
+
+describe('HomePage', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [HomePage],
+      providers: [provideRouter([]), ...provideMockDataAccess()],
+    }).compileComponents();
+  });
+
+  it('renders the hero and search', () => {
+    const fixture = TestBed.createComponent(HomePage);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.textContent).toContain('نوبتیفا!');
+    expect(el.querySelector('[aria-label="کد اتوسرویس"]')).toBeTruthy();
+  });
+
+  it('shows booking after a successful search', async () => {
+    const fixture = TestBed.createComponent(HomePage);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const input = el.querySelector('[aria-label="کد اتوسرویس"]') as HTMLInputElement;
+    input.value = '1001';
+    input.dispatchEvent(new Event('input'));
+    (el.querySelector('form') as HTMLFormElement).dispatchEvent(new Event('submit'));
+    await fixture.whenStable();
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    fixture.detectChanges();
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('اتوسرویس محمد');
+  }, 10000);
+});
