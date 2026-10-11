@@ -10,7 +10,7 @@ import { Button } from '../../shared/ui/button/button';
     <p class="mb-6 text-center text-sm leading-7 text-gray-500">
       شماره موبایل خود را وارد کنید سپس کد تایید پیامک شده را وارد کنید.
     </p>
-    <form (submit)="$event.preventDefault(); submit()" class="flex flex-col gap-6">
+    <form (submit)="$event.preventDefault(); submit()" class="flex flex-col gap-8">
       <div class="flex flex-col gap-1">
         <input
           [formControl]="mobile"
