@@ -18,6 +18,7 @@ export type IconName =
   | 'more'
   | 'chevron-left'
   | 'chevron-right'
+  | 'chevron-down'
   | 'instagram'
   | 'send'
   | 'plus'
@@ -131,6 +132,9 @@ export type IconName =
         }
         @case ('chevron-right') {
           <path d="m9 18 6-6-6-6" />
+        }
+        @case ('chevron-down') {
+          <path d="m6 9 6 6 6-6" />
         }
         @case ('instagram') {
           <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
