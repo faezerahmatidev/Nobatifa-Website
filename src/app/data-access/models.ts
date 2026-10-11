@@ -40,6 +40,12 @@ export interface TimeSlot {
   status: SlotStatus;
 }
 
+export interface BookingDay {
+  readonly id: string;
+  weekday: string;
+  date: string;
+}
+
 export interface Appointment {
   readonly id: string;
   serviceCenter: ServiceCenter;
