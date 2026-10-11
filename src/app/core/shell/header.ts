@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Icon } from '../../shared/ui/icon/icon';
+import { Logo } from '../../shared/ui/logo/logo';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, RouterLinkActive, Icon],
+  imports: [RouterLink, RouterLinkActive, Icon, Logo],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <header class="border-b border-gray-200 bg-white">
@@ -20,12 +21,7 @@ import { Icon } from '../../shared/ui/icon/icon';
             <app-icon [name]="menuOpen() ? 'x' : 'menu'" />
           </button>
           <a routerLink="/" class="flex items-center gap-2" aria-label="نوبتیفا">
-            <span
-              class="flex size-9 items-center justify-center rounded-full bg-primary-bold text-white"
-            >
-              <app-icon name="clock" />
-            </span>
-            <span class="text-lg font-black text-accent-bold">نوبتیفا</span>
+            <app-logo />
           </a>
         </div>
 
