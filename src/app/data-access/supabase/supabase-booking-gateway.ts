@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { forkJoin, from, map, Observable, of, switchMap } from 'rxjs';
+import { from, map, Observable, switchMap } from 'rxjs';
 import { SUPABASE_CLIENT } from '../../core/backend/supabase-client';
 import type {
   Appointment,
@@ -9,7 +9,6 @@ import type {
   ServiceCenter,
   SlotStatus,
   TimeSlot,
-  Vehicle,
 } from '../models';
 import { BOOKING_GATEWAY, type BookingGateway } from '../ports/booking-gateway';
 
@@ -22,7 +21,6 @@ interface CenterRow {
 
 interface DayRow {
   id: string;
-  center_id: string;
   weekday: string;
   date: string;
 }
@@ -52,11 +50,20 @@ interface AppointmentRow {
   vehicles: VehicleRow;
 }
 
+const APPOINTMENT_COLUMNS =
+  'id, date, time, status, ' +
+  'service_centers(id, code, name, address), ' +
+  'vehicles(id, type, plate_part1, plate_part2, plate_letter, plate_iran_code)';
+
 function toCenter(row: CenterRow): ServiceCenter {
   return { id: row.id, code: row.code, name: row.name, address: row.address ?? '' };
 }
 
-function toVehicle(row: VehicleRow): Vehicle {
+function toVehicle(row: VehicleRow): {
+  id: string;
+  type: string;
+  plate: { part1: string; part2: string; letter: string; iranCode: string };
+} {
   return {
     id: row.id,
     type: row.type,
@@ -83,10 +90,22 @@ function toAppointmentStatus(value: string): AppointmentStatus {
   throw new Error('وضعیت نوبت معتبر نیست');
 }
 
+function toAppointment(row: AppointmentRow): Appointment {
+  return {
+    id: row.id,
+    serviceCenter: toCenter(row.service_centers),
+    date: row.date,
+    time: row.time,
+    vehicle: toVehicle(row.vehicles),
+    status: toAppointmentStatus(row.status),
+  };
+}
+
 /**
  * Real `BookingGateway` over Supabase tables.
- * Mirrors mock behavior and UI error strings; row locking for `reserve`
- * is intentionally left to Phase 7 (atomic RPC) — see method note.
+ * `reserve` runs entirely inside the `reserve_appointment` transaction
+ * (row lock + ownership checks + insert); the gateway only forwards the
+ * call and reads back the created row for the UI model.
  */
 @Injectable()
 export class SupabaseBookingGateway implements BookingGateway {
@@ -118,7 +137,7 @@ export class SupabaseBookingGateway implements BookingGateway {
         from(
           this.supabase
             .from('booking_days')
-            .select('id, center_id, weekday, date')
+            .select('id, weekday, date')
             .eq('center_id', centerId)
             .order('date'),
         ),
@@ -183,121 +202,38 @@ export class SupabaseBookingGateway implements BookingGateway {
     slotId: string,
     vehicleId: string,
   ): Observable<Appointment> {
-    return this.currentUserId().pipe(
-      switchMap((userId) =>
-        forkJoin({
-          userId: of(userId),
-          slot: this.claimSlot(slotId),
-          refs: this.loadReserveRefs(centerId, dayId, vehicleId),
-        }),
-      ),
-      switchMap(({ userId, slot, refs }) =>
-        from(
-          this.supabase
-            .from('appointments')
-            .insert({
-              user_id: userId,
-              center_id: refs.center.id,
-              vehicle_id: refs.vehicle.id,
-              slot_id: slot.id,
-              date: refs.day.date,
-              time: slot.time,
-            })
-            .select(
-              'id, date, time, status, ' +
-                'service_centers(id, code, name, address), ' +
-                'vehicles(id, type, plate_part1, plate_part2, plate_letter, plate_iran_code)',
-            )
-            .single(),
-        ),
-      ),
-      map(({ data, error }) => {
+    return from(
+      this.supabase.rpc('reserve_appointment', {
+        p_center_id: centerId,
+        p_day_id: dayId,
+        p_slot_id: slotId,
+        p_vehicle_id: vehicleId,
+      }),
+    ).pipe(
+      switchMap(({ data, error }) => {
         if (error) {
           throw new Error(error.message);
         }
-        const row = data as unknown as AppointmentRow;
-        return {
-          id: row.id,
-          serviceCenter: toCenter(row.service_centers),
-          date: row.date,
-          time: row.time,
-          vehicle: toVehicle(row.vehicles),
-          status: toAppointmentStatus(row.status),
-        };
+        const id = data as unknown as string | null;
+        if (!id) {
+          throw new Error('رزرو ناموفق بود');
+        }
+        return from(
+          this.supabase
+            .from('appointments')
+            .select(APPOINTMENT_COLUMNS)
+            .eq('id', id)
+            .maybeSingle(),
+        );
       }),
-    );
-  }
-
-  /**
-   * Best-effort claim: marks the slot reserved only when still available.
-   * NOT fully atomic (claim + insert are separate round trips; a failed
-   * insert can orphan a reserved slot). Phase 7 replaces this with a
-   * single-transaction RPC: lock slot → conditional update → insert.
-   */
-  private claimSlot(slotId: string): Observable<SlotRow> {
-    return from(
-      this.supabase
-        .from('time_slots')
-        .update({ status: 'reserved' })
-        .eq('id', slotId)
-        .eq('status', 'available')
-        .select('id, day_id, time, status')
-        .maybeSingle(),
-    ).pipe(
       map(({ data, error }) => {
         if (error) {
           throw new Error(error.message);
         }
         if (!data) {
-          throw new Error('این ساعت قابل رزرو نیست');
+          throw new Error('رزرو ناموفق بود');
         }
-        return data as unknown as SlotRow;
-      }),
-    );
-  }
-
-  private loadReserveRefs(
-    centerId: string,
-    dayId: string,
-    vehicleId: string,
-  ): Observable<{ center: CenterRow; day: DayRow; vehicle: VehicleRow }> {
-    return forkJoin({
-      center: from(
-        this.supabase
-          .from('service_centers')
-          .select('id, code, name, address')
-          .eq('id', centerId)
-          .maybeSingle(),
-      ),
-      day: from(
-        this.supabase
-          .from('booking_days')
-          .select('id, center_id, weekday, date')
-          .eq('id', dayId)
-          .maybeSingle(),
-      ),
-      vehicle: from(
-        this.supabase
-          .from('vehicles')
-          .select('id, type, plate_part1, plate_part2, plate_letter, plate_iran_code')
-          .eq('id', vehicleId)
-          .maybeSingle(),
-      ),
-    }).pipe(
-      map(({ center, day, vehicle }) => {
-        if (center.error || day.error || vehicle.error) {
-          throw new Error(
-            center.error?.message ?? day.error?.message ?? vehicle.error?.message ?? 'خطایی رخ داد',
-          );
-        }
-        if (!center.data || !day.data || !vehicle.data) {
-          throw new Error('اطلاعات رزرو معتبر نیست');
-        }
-        return {
-          center: center.data as unknown as CenterRow,
-          day: day.data as unknown as DayRow,
-          vehicle: vehicle.data as unknown as VehicleRow,
-        };
+        return toAppointment(data as unknown as AppointmentRow);
       }),
     );
   }
@@ -318,21 +254,6 @@ export class SupabaseBookingGateway implements BookingGateway {
           throw new Error('اتوسرویس یافت نشد');
         }
         return data as unknown as CenterRow;
-      }),
-    );
-  }
-
-  private currentUserId(): Observable<string> {
-    return from(this.supabase.auth.getUser()).pipe(
-      map(({ data, error }) => {
-        if (error) {
-          throw new Error(error.message);
-        }
-        const id = data.user?.id;
-        if (!id) {
-          throw new Error('ابتدا وارد شوید');
-        }
-        return id;
       }),
     );
   }

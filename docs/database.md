@@ -73,3 +73,9 @@ Implemented in `supabase/migrations/20261012000001_rls_policies.sql` (applies af
 - Invoices/items: owner read through appointment ownership; no user writes.
 - `handle_new_user()` trigger (`SECURITY DEFINER`, locked `search_path`, `EXECUTE` revoked) auto-creates `profiles` on signup; no user-side `INSERT` grant, so forged profiles are impossible. Phone-only assumption documented in the migration.
 - Deferred to Phase 7: atomic `reserve` transaction/RPC (slot lock + conditional update) and any status-transition enforcement. `UNIQUE(slot_id)` already blocks double booking at the constraint level.
+
+## 9. Atomic reservation + time and validation notes (Phase 7)
+
+- Implemented in `supabase/migrations/20261012000002_reserve_rpc.sql`: `reserve_appointment(...)` (`SECURITY DEFINER`, locked `search_path`, `EXECUTE` for authenticated only) locks the slot (`FOR UPDATE`), verifies availability/refs/vehicle ownership via `auth.uid()`, marks it reserved, and inserts the `pending` appointment in one transaction. Same Persian UI error strings. `SupabaseBookingGateway.reserve` now calls the RPC and reads back the row.
+- Timezones: booking dates/times are Jalali display `TEXT` passed through verbatim — no conversion exists or is needed. `created_at` is system UTC metadata, never displayed as booking time.
+- Validation split (unchanged): frontend validates formats/completeness (mobile pattern, full plate, required names); the database enforces FKs, `UNIQUE`, `CHECK`s, ownership, and the RPC preconditions.
