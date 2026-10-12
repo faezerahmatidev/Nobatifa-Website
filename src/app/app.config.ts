@@ -3,7 +3,7 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { SUPABASE_CLIENT_PROVIDER } from './core/backend/supabase-client';
-import { provideMockDataAccess } from './data-access/mock/provide-mock-data-access';
+import { provideSupabaseDataAccess } from './data-access/supabase/provide-supabase-data-access';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -11,6 +11,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideClientHydration(),
     SUPABASE_CLIENT_PROVIDER,
-    ...provideMockDataAccess(),
+    ...provideSupabaseDataAccess(),
   ]
 };

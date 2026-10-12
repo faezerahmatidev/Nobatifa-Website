@@ -16,6 +16,7 @@ interface FakeClient {
   auth: {
     signInWithOtp: (args: { phone: string }) => Promise<unknown>;
     verifyOtp: (args: { phone: string; token: string }) => Promise<unknown>;
+    signInAnonymously: () => Promise<unknown>;
     getUser: () => Promise<unknown>;
     getSession: () => Promise<unknown>;
     signOut: () => Promise<unknown>;
@@ -44,6 +45,8 @@ function setup(overrides: Partial<FakeClient['auth']> = {}, row: unknown = null)
       signInWithOtp: () => Promise.resolve({ data: {}, error: null }),
       verifyOtp: () =>
         Promise.resolve({ data: { user: { id: 'u1' } }, error: null }),
+      signInAnonymously: () =>
+        Promise.resolve({ data: { user: { id: 'anon-1' } }, error: null }),
       getUser: () => Promise.resolve({ data: { user: { id: 'u1' } }, error: null }),
       getSession: () =>
         Promise.resolve({ data: { session: { user: { id: 'u1' } } }, error: null }),
@@ -140,5 +143,29 @@ describe('SupabaseAuthGateway', () => {
     });
     await expect(firstValueFrom(gateway.currentSession())).resolves.toBeNull();
     await expect(firstValueFrom(gateway.logout())).resolves.toBeUndefined();
+  });
+
+  it('falls back to anonymous login on the dev bypass code', async () => {
+    const { gateway } = setup(
+      {
+        signInWithOtp: () =>
+          Promise.resolve({ data: {}, error: { message: 'SMS provider not configured' } }),
+      },
+      { id: 'anon-1', mobile: null, first_name: '', last_name: '' },
+    );
+    await expect(firstValueFrom(gateway.requestOtp('09227521450'))).resolves.toBeUndefined();
+    await expect(firstValueFrom(gateway.verifyOtp('09227521450', '1111'))).resolves.toEqual({
+      isNewUser: true,
+    });
+  });
+
+  it('explains how to enable anonymous dev login', async () => {
+    const { gateway } = setup({
+      signInAnonymously: () =>
+        Promise.resolve({ data: { user: null }, error: { message: 'disabled' } }),
+    });
+    await expect(firstValueFrom(gateway.verifyOtp('09227521450', '1111'))).rejects.toThrow(
+      'ورود آزمایشی فعال نیست',
+    );
   });
 });

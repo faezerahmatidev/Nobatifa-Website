@@ -1,15 +1,24 @@
 import { inject, Injectable } from '@angular/core';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { from, map, Observable, of, switchMap, throwError } from 'rxjs';
+import { catchError, from, map, Observable, of, switchMap, throwError } from 'rxjs';
 import { SUPABASE_CLIENT } from '../../core/backend/supabase-client';
+import { environment } from '../../../environments/environment';
 import type { AuthSession, User } from '../models';
 import { AUTH_GATEWAY, type AuthGateway, type VerifyResult } from '../ports/auth-gateway';
 
 interface ProfileRow {
   id: string;
-  mobile: string;
+  mobile: string | null;
   first_name: string | null;
   last_name: string | null;
+}
+
+/** Dev-only bypass code. NEVER accepted in production builds. */
+export const DEV_BYPASS_CODE = '1111';
+
+/** True in development builds (including `ng serve` and tests). */
+export function isDevBypassEnabled(): boolean {
+  return !environment.production;
 }
 
 /**
@@ -33,7 +42,7 @@ function toUser(row: ProfileRow): User {
     id: row.id,
     firstName: row.first_name ?? '',
     lastName: row.last_name ?? '',
-    mobile: row.mobile,
+    mobile: row.mobile ?? '',
   };
 }
 
@@ -61,6 +70,14 @@ export class SupabaseAuthGateway implements AuthGateway {
           throw new Error(error.message);
         }
       }),
+      // Dev only: when no SMS provider is configured the request fails.
+      // Swallow it so the 1111 bypass stays usable; production rethrows.
+      catchError((error: unknown) => {
+        if (isDevBypassEnabled()) {
+          return of(undefined);
+        }
+        throw error instanceof Error ? error : new Error('خطایی رخ داد');
+      }),
     );
   }
 
@@ -70,6 +87,13 @@ export class SupabaseAuthGateway implements AuthGateway {
       phone = toE164IranMobile(mobile);
     } catch (error) {
       return throwError(() => error);
+    }
+    // Dev only: the bypass code signs in anonymously (real Supabase
+    // session, so RLS and the reserve RPC keep working). Requires
+    // "Allow anonymous sign-ins" in the Supabase dashboard.
+    // In production this branch does not exist: 1111 is just a wrong code.
+    if (isDevBypassEnabled() && code.trim() === DEV_BYPASS_CODE) {
+      return this.devBypassLogin();
     }
     return from(
       this.supabase.auth.verifyOtp({ phone, token: code.trim(), type: 'sms' }),
@@ -141,6 +165,30 @@ export class SupabaseAuthGateway implements AuthGateway {
           throw new Error(error.message);
         }
       }),
+    );
+  }
+
+  /**
+   * Dev-only login behind the 1111 code. Creates a real anonymous Supabase
+   * session (requires "Allow anonymous sign-ins" on the project), so RLS,
+   * ownership checks, and the reserve RPC keep working exactly like a real
+   * login. Never reachable in production builds.
+   */
+  private devBypassLogin(): Observable<VerifyResult> {
+    return from(this.supabase.auth.signInAnonymously()).pipe(
+      switchMap(({ data, error }) => {
+        if (error) {
+          throw new Error(
+            'ورود آزمایشی فعال نیست (در داشبورد Supabase گزینه Allow anonymous sign-ins را فعال کنید)',
+          );
+        }
+        const id = data.user?.id;
+        if (!id) {
+          throw new Error('ورود ناموفق بود');
+        }
+        return this.readProfile(id);
+      }),
+      map((user) => ({ isNewUser: !user.firstName.trim() || !user.lastName.trim() })),
     );
   }
 
