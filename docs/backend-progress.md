@@ -14,6 +14,17 @@ This file tracks the 9-phase backend implementation. Updated at the end of each 
 | 8 | Tests and Quality Assurance | Completed | 2026-10-12 | tsc app+spec clean; lint green; 50 files/143 tests green (+4: rpc-miss, bad status, error passthrough, numeric coercion). `ng build` still fails ONLY on the pre-existing prerender error (unchanged). Engine-dependent tests (migrations, RLS, conflicts, live OTP) blocked: no live project. |
 | 9 | Documentation, CI, and Final Audit | Completed | 2026-10-12 | README backend + known-issues sections; CI left as-is (lint/test/build appropriate); final diff + secret scan clean; no admin repo; live wiring + prerender fix remain manual. |
 
+## Live onboarding (post-Phase 9, in progress)
+
+- [x] Supabase project created (`nobatifa-website`, eu-central-1, healthy)
+- [x] Supabase CLI installed (`2.120.0`)
+- [x] Dev seed migration authored (`20261012000003_dev_seed.sql`, idempotent)
+- [x] Dev `environment.ts` wired with URL + publishable key (public-safe values)
+- [ ] `supabase link` + `supabase db push` (needs DB password — user runs locally)
+- [ ] Live verification via public REST reads + RLS denial checks
+- [ ] SMS provider for real phone OTP (paid/region-dependent — likely blocked)
+- [ ] Switch default providers from mocks to Supabase gateways (after OTP works)
+
 ## Rules in force for all phases
 
 - Exactly ONE phase per execution; stop and wait for explicit instruction.
