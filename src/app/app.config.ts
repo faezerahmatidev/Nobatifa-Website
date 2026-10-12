@@ -2,6 +2,7 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
+import { SUPABASE_CLIENT_PROVIDER } from './core/backend/supabase-client';
 import { provideMockDataAccess } from './data-access/mock/provide-mock-data-access';
 
 export const appConfig: ApplicationConfig = {
@@ -9,6 +10,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideClientHydration(),
+    SUPABASE_CLIENT_PROVIDER,
     ...provideMockDataAccess(),
   ]
 };
