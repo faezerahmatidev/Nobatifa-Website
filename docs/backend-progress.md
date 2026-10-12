@@ -8,7 +8,7 @@ This file tracks the 9-phase backend implementation. Updated at the end of each 
 | 2 | Data Model and Database Design | Completed | 2026-10-12 | Created `docs/database.md` + `supabase/migrations/20261012000000_core_schema.sql` (tables/keys/indexes; RLS deferred to Phase 4; not applied anywhere). |
 | 3 | Supabase Integration Foundation | Completed | 2026-10-12 | Client + envs + provider + `.env.example` + setup docs. Live verification blocked: no Supabase project URL/key yet. `ng build` has a PRE-EXISTING prerender failure (`center/:code`, proven on clean tree) — not caused by this phase. |
 | 4 | Database Migrations and Security | Completed | 2026-10-12 | `20261012000001_rls_policies.sql`: RLS on 8 tables + least-privilege GRANTs/policies + `handle_new_user` trigger. Secret scan clean. NOT applied anywhere (no live project); engine-level test blocked accordingly. |
-| 5 | Authentication and Authorization Integration | Not started | — | Requires product decision on OTP delivery (see uncertainties). |
+| 5 | Authentication and Authorization Integration | Completed | 2026-10-12 | `SupabaseAuthGateway` (phone OTP, E.164, profile completion, session, logout) + 8 unit tests with faked client (no network). Mocks stay wired by default; UI/guards untouched; RLS remains the enforcement layer. Live OTP blocked: no Supabase project/SMS provider yet. |
 | 6 | Angular Data Access and API Integration | Not started | — | Requires Phase 3 + 4. |
 | 7 | Booking and Business Logic | Not started | — | Requires Phase 6 + business-rule evidence. |
 | 8 | Tests and Quality Assurance | Not started | — | — |
