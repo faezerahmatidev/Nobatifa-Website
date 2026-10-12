@@ -20,8 +20,10 @@ This file tracks the 9-phase backend implementation. Updated at the end of each 
 - [x] Supabase CLI installed (`2.120.0`)
 - [x] Dev seed migration authored (`20261012000003_dev_seed.sql`, idempotent)
 - [x] Dev `environment.ts` wired with URL + publishable key (public-safe values)
-- [ ] `supabase link` + `supabase db push` (needs DB password — user runs locally)
-- [ ] Live verification via public REST reads + RLS denial checks
+- [x] `supabase link` + `supabase db push` (needs DB password — user runs locally)
+- [x] Migrations applied live (4/4, verified via CLI output)
+- [x] Live verification: center 1001 readable, 14 days, 112 slots, anon vehicle-insert denied (401), anon profiles unreadable (401)
+- [ ] Authenticated-path verification (needs a real user → blocked on SMS provider)
 - [ ] SMS provider for real phone OTP (paid/region-dependent — likely blocked)
 - [ ] Switch default providers from mocks to Supabase gateways (after OTP works)
 
