@@ -61,4 +61,15 @@ No business rules invented; open points are listed in §7.
 2. Invoice/price source (who creates invoices, price lists) is unevidenced — service-side concern.
 3. Re-booking a slot whose appointment was `cancelled` is undecided (current `UNIQUE(slot_id)` blocks it; revisit when a cancel flow exists).
 4. Seed data (demo center `1001`, demo user) exists only in mocks; real seed strategy TBD, non-destructive.
-5. Migration authored but NOT applied anywhere (no Supabase project yet); engine-level verification happens in Phase 4.
+5. Migrations authored but NOT applied anywhere (no Supabase project yet); engine-level verification still blocked — see Phase 4 report.
+
+## 8. RLS implementation (Phase 4)
+
+Implemented in `supabase/migrations/20261012000001_rls_policies.sql` (applies after the core schema; NOT applied anywhere yet):
+
+- `ENABLE ROW LEVEL SECURITY` on all 8 tables; explicit `REVOKE ALL` + minimal `GRANT`s per table (policies alone do not grant access).
+- Owners-only access via `auth.uid()` on `profiles` (read + first/last-name update only — mobile immutable), `vehicles` (full CRUD own), `appointments` (select + insert own; no user update/delete — no cancel UI evidenced).
+- Public (anon + authenticated) read on centers/days/slots — matches the unguarded home/center routes.
+- Invoices/items: owner read through appointment ownership; no user writes.
+- `handle_new_user()` trigger (`SECURITY DEFINER`, locked `search_path`, `EXECUTE` revoked) auto-creates `profiles` on signup; no user-side `INSERT` grant, so forged profiles are impossible. Phone-only assumption documented in the migration.
+- Deferred to Phase 7: atomic `reserve` transaction/RPC (slot lock + conditional update) and any status-transition enforcement. `UNIQUE(slot_id)` already blocks double booking at the constraint level.
