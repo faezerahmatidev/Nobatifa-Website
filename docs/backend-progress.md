@@ -27,7 +27,8 @@ This file tracks the 9-phase backend implementation. Updated at the end of each 
 - [ ] SMS provider for real phone OTP (paid/region-dependent — likely blocked)
 - [x] Switch default providers from mocks to Supabase gateways (dev bypass 1111, prod-safe)
 - [ ] Push migration 0004 (nullable mobile) + enable Anonymous sign-ins (user actions)
-- [ ] Live 1111 login + reserve E2E verification (after user actions)
+- [x] Live 1111 login + reserve E2E verification (after user actions)
+- [x] Full live loop verified: anon 1111 login → profile completion → car creation (RLS) → atomic RPC reserve → success modal, zero page errors
 - [ ] SMS provider for real phone OTP (paid/region-dependent — likely blocked)
 
 ## Rules in force for all phases
