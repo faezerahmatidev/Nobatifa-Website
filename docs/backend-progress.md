@@ -9,7 +9,7 @@ This file tracks the 9-phase backend implementation. Updated at the end of each 
 | 3 | Supabase Integration Foundation | Completed | 2026-10-12 | Client + envs + provider + `.env.example` + setup docs. Live verification blocked: no Supabase project URL/key yet. `ng build` has a PRE-EXISTING prerender failure (`center/:code`, proven on clean tree) — not caused by this phase. |
 | 4 | Database Migrations and Security | Completed | 2026-10-12 | `20261012000001_rls_policies.sql`: RLS on 8 tables + least-privilege GRANTs/policies + `handle_new_user` trigger. Secret scan clean. NOT applied anywhere (no live project); engine-level test blocked accordingly. |
 | 5 | Authentication and Authorization Integration | Completed | 2026-10-12 | `SupabaseAuthGateway` (phone OTP, E.164, profile completion, session, logout) + 8 unit tests with faked client (no network). Mocks stay wired by default; UI/guards untouched; RLS remains the enforcement layer. Live OTP blocked: no Supabase project/SMS provider yet. |
-| 6 | Angular Data Access and API Integration | Not started | — | Requires Phase 3 + 4. |
+| 6 | Angular Data Access and API Integration | Completed | 2026-10-12 | Real `Supabase*Gateway` for booking/appointments/cars/invoices behind existing ports (same UI error strings, typed row mapping, owner scoping, PGRST116 handling) + 12 unit tests with faked client. Mocks stay wired; no UI changes. Live calls blocked: no project. Atomic `reserve` RPC deferred to Phase 7 (documented limitation in code). |
 | 7 | Booking and Business Logic | Not started | — | Requires Phase 6 + business-rule evidence. |
 | 8 | Tests and Quality Assurance | Not started | — | — |
 | 9 | Documentation, CI, and Final Audit | Not started | — | — |
