@@ -25,7 +25,10 @@ This file tracks the 9-phase backend implementation. Updated at the end of each 
 - [x] Live verification: center 1001 readable, 14 days, 112 slots, anon vehicle-insert denied (401), anon profiles unreadable (401)
 - [ ] Authenticated-path verification (needs a real user → blocked on SMS provider)
 - [ ] SMS provider for real phone OTP (paid/region-dependent — likely blocked)
-- [ ] Switch default providers from mocks to Supabase gateways (after OTP works)
+- [x] Switch default providers from mocks to Supabase gateways (dev bypass 1111, prod-safe)
+- [ ] Push migration 0004 (nullable mobile) + enable Anonymous sign-ins (user actions)
+- [ ] Live 1111 login + reserve E2E verification (after user actions)
+- [ ] SMS provider for real phone OTP (paid/region-dependent — likely blocked)
 
 ## Rules in force for all phases
 
