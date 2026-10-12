@@ -33,7 +33,7 @@ src/app/
   shared/ui/    button, input, modal, badge, icon, otp, plate, date-strip,
                 slot-card, loading/empty/error states
   features/     home (booking), auth (forms), appointments, cars, invoice, about
-  data-access/  models, ports/, mock/, mock-data/
+  data-access/  models, ports/, mock/, mock-data/, supabase/ (real gateways)
 ```
 
 ## Commands
@@ -59,6 +59,25 @@ npx ng build     # production build
 - Fixed OTP code: `1234`.
 - Demo service-center code: `1001`.
 - Demo user: فائزه رحمتی / `09227521450`.
+
+## Backend (Supabase + PostgreSQL)
+
+Integration code is implemented behind the existing `ports`, but the app
+still runs on mocks — no live project is connected yet.
+
+- Setup: `docs/supabase-setup.md` (project, keys, local wiring)
+- Plan & schema: `docs/backend-implementation.md`, `docs/database.md`
+- Migrations: `supabase/migrations/` (authored, NOT applied — needs a live project)
+- Real gateways: `src/app/data-access/supabase/` (swap providers to use them;
+  mocks stay for offline dev)
+- Env vars (values never committed): `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`
+  (browser-safe). `SUPABASE_SERVICE_ROLE_KEY` is local/admin-only, never in `src/`.
+
+## Known issues
+
+- `npx ng build` fails on the pre-existing `center/:code` prerender error
+  (`getPrerenderParams` missing) — predates the backend work and needs a
+  separate decision before the CI build step can go green.
 
 ## Authentication limitation
 

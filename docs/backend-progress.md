@@ -12,7 +12,7 @@ This file tracks the 9-phase backend implementation. Updated at the end of each 
 | 6 | Angular Data Access and API Integration | Completed | 2026-10-12 | Real `Supabase*Gateway` for booking/appointments/cars/invoices behind existing ports (same UI error strings, typed row mapping, owner scoping, PGRST116 handling) + 12 unit tests with faked client. Mocks stay wired; no UI changes. Live calls blocked: no project. Atomic `reserve` RPC deferred to Phase 7 (documented limitation in code). |
 | 7 | Booking and Business Logic | Completed | 2026-10-12 | Atomic `reserve_appointment` RPC migration + gateway switched to rpc-then-read; same UI errors; concurrency via row lock; no user status transitions evidenced (display-only). NOT applied anywhere (no live project). |
 | 8 | Tests and Quality Assurance | Completed | 2026-10-12 | tsc app+spec clean; lint green; 50 files/143 tests green (+4: rpc-miss, bad status, error passthrough, numeric coercion). `ng build` still fails ONLY on the pre-existing prerender error (unchanged). Engine-dependent tests (migrations, RLS, conflicts, live OTP) blocked: no live project. |
-| 9 | Documentation, CI, and Final Audit | Not started | — | — |
+| 9 | Documentation, CI, and Final Audit | Completed | 2026-10-12 | README backend + known-issues sections; CI left as-is (lint/test/build appropriate); final diff + secret scan clean; no admin repo; live wiring + prerender fix remain manual. |
 
 ## Rules in force for all phases
 
