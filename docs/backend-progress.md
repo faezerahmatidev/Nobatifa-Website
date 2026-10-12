@@ -5,7 +5,7 @@ This file tracks the 9-phase backend implementation. Updated at the end of each 
 | Phase | Title | Status | Date (UTC) | Notes |
 | ----- | ----- | ------ | ---------- | ----- |
 | 1 | Discovery and Current-State Audit | Completed | 2026-10-12 | Read-only audit; created `backend-progress.md` + `backend-implementation.md`. No source changes. |
-| 2 | Data Model and Database Design | Not started | — | Awaiting explicit authorization. |
+| 2 | Data Model and Database Design | Completed | 2026-10-12 | Created `docs/database.md` + `supabase/migrations/20261012000000_core_schema.sql` (tables/keys/indexes; RLS deferred to Phase 4; not applied anywhere). |
 | 3 | Supabase Integration Foundation | Not started | — | Blocked until Supabase project URL + publishable key are available (see uncertainties). |
 | 4 | Database Migrations and Security | Not started | — | Requires Phase 2 + 3. |
 | 5 | Authentication and Authorization Integration | Not started | — | Requires product decision on OTP delivery (see uncertainties). |
