@@ -136,4 +136,14 @@ describe('SupabaseBookingGateway', () => {
       firstValueFrom(gateway.reserve('c1', 'nope', 's1', 'v1')),
     ).rejects.toThrow('اطلاعات رزرو معتبر نیست');
   });
+
+  it('reports a missing row after a successful rpc', async () => {
+    const { gateway } = setup(
+      (table) => (table === 'appointments' ? { data: null, error: null } : { data: null, error: null }),
+      { data: 'a9', error: null },
+    );
+    await expect(firstValueFrom(gateway.reserve('c1', 'd1', 's1', 'v1'))).rejects.toThrow(
+      'رزرو ناموفق بود',
+    );
+  });
 });

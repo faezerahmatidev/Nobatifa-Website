@@ -114,6 +114,14 @@ describe('SupabaseAppointmentsGateway', () => {
     const gateway = TestBed.inject(SupabaseAppointmentsGateway);
     await expect(firstValueFrom(gateway.list())).rejects.toThrow('ابتدا وارد شوید');
   });
+
+  it('rejects unknown appointment statuses', async () => {
+    TestBed.configureTestingModule({
+      providers: providers(() => ({ data: [{ ...APPOINTMENT_ROW, status: 'weird' }], error: null })),
+    });
+    const gateway = TestBed.inject(SupabaseAppointmentsGateway);
+    await expect(firstValueFrom(gateway.list())).rejects.toThrow('وضعیت نوبت معتبر نیست');
+  });
 });
 
 describe('SupabaseCarsGateway', () => {
@@ -156,6 +164,20 @@ describe('SupabaseCarsGateway', () => {
     );
     await expect(firstValueFrom(gateway.remove('nope'))).rejects.toThrow('خودرو یافت نشد');
   });
+
+  it('passes genuine database errors through', async () => {
+    TestBed.configureTestingModule({
+      providers: [
+        ...providers(
+          () => ({ data: [], error: null }),
+          'u1',
+          () => ({ data: null, error: { message: 'boom' } }),
+        ),
+      ],
+    });
+    const gateway = TestBed.inject(SupabaseCarsGateway);
+    await expect(firstValueFrom(gateway.update('v1', 'پراید', PLATE))).rejects.toThrow('boom');
+  });
 });
 
 describe('SupabaseInvoicesGateway', () => {
@@ -174,5 +196,27 @@ describe('SupabaseInvoicesGateway', () => {
     await expect(firstValueFrom(gateway.getByAppointmentId('nope'))).rejects.toThrow(
       'فاکتور یافت نشد',
     );
+  });
+
+  it('coerces numeric strings from the api', async () => {
+    TestBed.configureTestingModule({
+      providers: [
+        ...providers(() => ({
+          data: {
+            ...INVOICE_ROW,
+            total_rial: '12000000',
+            mileage_km: '30000',
+            next_mileage_km: '36000',
+            invoice_items: [{ title: 'تعویض روغن', amount_rial: '6500000' }],
+          },
+          error: null,
+        })),
+      ],
+    });
+    const gateway = TestBed.inject(SupabaseInvoicesGateway);
+    const invoice = await firstValueFrom(gateway.getByAppointmentId('a2'));
+    expect(invoice.totalRial).toBe(12000000);
+    expect(invoice.mileageKm).toBe(30000);
+    expect(invoice.items).toEqual([{ title: 'تعویض روغن', amountRial: 6500000 }]);
   });
 });
