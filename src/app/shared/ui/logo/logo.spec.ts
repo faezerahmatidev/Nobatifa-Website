@@ -6,7 +6,7 @@ describe('Logo', () => {
     const fixture = TestBed.createComponent(Logo);
     fixture.detectChanges();
     const img = (fixture.nativeElement as HTMLElement).querySelector('img');
-    expect(img?.getAttribute('src')).toBe('/logo.svg');
+    expect(img?.getAttribute('src')).toBe('logo.svg');
     expect(img?.getAttribute('alt')).toBe('نوبتیفا');
   });
 });

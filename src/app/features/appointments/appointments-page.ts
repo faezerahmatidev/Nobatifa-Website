@@ -83,12 +83,12 @@ const STATUS_LABEL: Record<AppointmentStatus, string> = {
                 <div class="mt-auto flex gap-2">
                   @if (appointment.status === 'done') {
                     <app-button size="sm" (click)="facade.goToInvoice(appointment.id)">
-                      <img src="/icons/document.svg" alt="" width="13" height="14" />
+                      <img src="icons/document.svg" alt="" width="13" height="14" />
                       فاکتور
                     </app-button>
                   } @else {
                     <app-button size="sm" [disabled]="true">
-                      <img src="/icons/document.svg" alt="" width="13" height="14" />
+                      <img src="icons/document.svg" alt="" width="13" height="14" />
                       فاکتور
                     </app-button>
                   }

@@ -20,7 +20,7 @@ import { Icon } from '../icon/icon';
         @case ('available') {
           <app-button (click)="reserve.emit()">
             رزرو
-            <img src="/icons/arrow-left.svg" alt="" width="12" height="10" />
+            <img src="icons/arrow-left.svg" alt="" width="12" height="10" />
           </app-button>
         }
         @case ('closed') {

@@ -23,7 +23,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
         </div>
         <div class="flex-1">
           <img
-            src="/illustrations/About-us.png"
+            src="illustrations/About-us.png"
             alt="ایلاستریشن کاربر نوبتیفا"
             class="h-auto w-full"
           />

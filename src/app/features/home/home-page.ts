@@ -18,7 +18,7 @@ import { BookingFacade } from './booking-facade';
     <section class="bg-white">
       <div class="mx-auto max-w-7xl px-4 py-10 lg:py-14">
         <img
-          src="/illustrations/hero-desktop.png"
+          src="illustrations/hero-desktop.png"
           alt=""
           class="hidden h-auto w-full lg:block"
         />
@@ -27,7 +27,7 @@ import { BookingFacade } from './booking-facade';
           زمان شما ارزشمند است
         </p>
         <img
-          src="/illustrations/hero-car.png"
+          src="illustrations/hero-car.png"
           alt=""
           class="mx-auto mt-6 h-auto w-full max-w-md lg:hidden"
         />

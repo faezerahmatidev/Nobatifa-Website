@@ -5,7 +5,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <img
-      src="/logo.svg"
+      src="logo.svg"
       alt="نوبتیفا"
       [style.height.px]="height()"
       class="w-auto"
